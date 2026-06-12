@@ -1,0 +1,53 @@
+[
+    {
+        "match_id": "mock_match_1",
+        "commence_time": "2026-06-15T18:00:00Z",
+        "home_team": "Brazil",
+        "away_team": "France",
+        "home_odds": 2.12,
+        "draw_odds": 3.23,
+        "away_odds": 3.35,
+        "de_vigged_home_prob": 0.4421,
+        "de_vigged_draw_prob": 0.2846,
+        "de_vigged_away_prob": 0.2733,
+        "lambda_h": 1.5319,
+        "lambda_a": 1.1639,
+        "predicted_home_goals": 1,
+        "predicted_away_goals": 0,
+        "expected_points": 3.658
+    },
+    {
+        "match_id": "mock_match_2",
+        "commence_time": "2026-06-16T20:00:00Z",
+        "home_team": "Argentina",
+        "away_team": "Germany",
+        "home_odds": 1.95,
+        "draw_odds": 3.3,
+        "away_odds": 3.8,
+        "de_vigged_home_prob": 0.4836,
+        "de_vigged_draw_prob": 0.2778,
+        "de_vigged_away_prob": 0.2387,
+        "lambda_h": 1.6217,
+        "lambda_a": 1.0836,
+        "predicted_home_goals": 1,
+        "predicted_away_goals": 0,
+        "expected_points": 3.881
+    },
+    {
+        "match_id": "mock_match_3",
+        "commence_time": "2026-06-17T15:00:00Z",
+        "home_team": "Spain",
+        "away_team": "England",
+        "home_odds": 2.5,
+        "draw_odds": 3.1,
+        "away_odds": 2.9,
+        "de_vigged_home_prob": 0.3768,
+        "de_vigged_draw_prob": 0.3007,
+        "de_vigged_away_prob": 0.3225,
+        "lambda_h": 1.3226,
+        "lambda_a": 1.208,
+        "predicted_home_goals": 1,
+        "predicted_away_goals": 0,
+        "expected_points": 3.368
+    }
+]

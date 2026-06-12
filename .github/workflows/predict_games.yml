@@ -18,12 +18,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/checkout@v4
-        # Wait, setting up python uses actions/setup-python@v5, not checkout!
-        # Let's write the correct action:
-
-      # Let's fix that block. We will write setup-python:
       - name: Set up Python 3.12
         uses: actions/setup-python@v5
         with:

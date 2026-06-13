@@ -10,13 +10,18 @@ import math
 import requests
 import pandas as pd
 import penaltyblog as pb
+from dotenv import load_dotenv
+
+load_dotenv()
+
 
 # Configuration
 API_KEY = os.getenv("THE_ODDS_API_KEY", "YOUR_API_KEY")
 SPORT = "soccer_fifa_world_cup"
 REGION = "eu,us,uk"
 MARKET = "h2h"
-RESULTS_FILE = "results.json"
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+RESULTS_FILE = os.path.join(SCRIPT_DIR, "results.json")
 
 # Realistic Mock Data if API fails or lacks active matches
 MOCK_ODDS_RESPONSE = [

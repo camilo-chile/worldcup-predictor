@@ -33,12 +33,12 @@ jobs:
       - name: Run prediction script
         env:
           THE_ODDS_API_KEY: ${{ secrets.THE_ODDS_API_KEY }}
-        run: python main.py
+        run: python predictor/main.py
 
       - name: Commit and push predictions
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add results.json
-          git commit -m "Auto-update predictions: results.json [skip ci]" || echo "No changes to commit"
+          git add predictor/results.json
+          git commit -m "Auto-update predictions: predictor/results.json [skip ci]" || echo "No changes to commit"
           git push

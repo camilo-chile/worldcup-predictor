@@ -32,8 +32,8 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Default URLs and Constants
-DEFAULT_URL = "https://raw.githubusercontent.com/camilo-chile/worldcup-predictor/main/results.json"
-LOCAL_FILE = "results.json"
+DEFAULT_URL = "https://raw.githubusercontent.com/camilo-chile/worldcup-predictor/main/predictor/results.json"
+LOCAL_FILE = "predictor/results.json"
 
 @st.cache_data(ttl=60)
 def load_predictions(url):
@@ -118,9 +118,12 @@ if data is not None and len(data) > 0:
     
     st.markdown("### 📋 Match Predictions")
     
-    # Format columns for presentation
+    # Format columns for presentation (Convert UTC to America/Toronto which matches Santiago de Chile time in June)
+    times = pd.to_datetime(df["commence_time"])
+    if times.dt.tz is None:
+        times = times.dt.tz_localize("UTC")
     presentation_df = pd.DataFrame()
-    presentation_df["Commence Time (UTC)"] = pd.to_datetime(df["commence_time"]).dt.strftime("%Y-%m-%d %H:%M")
+    presentation_df["Kickoff (Toronto/Santiago Time)"] = times.dt.tz_convert("America/Toronto").dt.strftime("%Y-%m-%d %H:%M")
     presentation_df["Home Team"] = df["home_team"]
     presentation_df["Away Team"] = df["away_team"]
     presentation_df["Pred Score"] = df.apply(lambda r: f"{r['predicted_home_goals']} - {r['predicted_away_goals']}", axis=1)

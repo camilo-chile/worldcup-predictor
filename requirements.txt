@@ -2,3 +2,5 @@ requests
 penaltyblog
 pandas
 streamlit
+python-dotenv
+

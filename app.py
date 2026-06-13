@@ -104,11 +104,10 @@ LOCAL_FILE = "predictor/results.json"
 def load_predictions(url):
     """
     Fetch predictions from the raw GitHub URL. Falls back to local results.json file.
-    Returns: (data, source_name, last_updated_est)
+    Returns: (data, source_name)
     """
     source = "Unknown"
     data = None
-    last_updated = "Unknown"
     
     # Try raw GitHub URL if it is configured
     if "YOUR_USERNAME" not in url and url.startswith("http"):
@@ -117,15 +116,6 @@ def load_predictions(url):
             if res.status_code == 200:
                 data = res.json()
                 source = "GitHub Repository"
-                # Parse Last-Modified header
-                lm_header = res.headers.get("Last-Modified")
-                if lm_header:
-                    try:
-                        dt = email.utils.parsedate_to_datetime(lm_header)
-                        dt_est = dt.astimezone(zoneinfo.ZoneInfo("America/Toronto"))
-                        last_updated = dt_est.strftime("%Y-%m-%d %H:%M %Z")
-                    except Exception:
-                        pass
         except Exception:
             pass
             
@@ -136,27 +126,40 @@ def load_predictions(url):
                 with open(LOCAL_FILE, "r", encoding="utf-8") as f:
                     data = json.load(f)
                 source = "Local System Cache"
-                # Get local file modification time
-                mtime = os.path.getmtime(LOCAL_FILE)
-                dt = datetime.fromtimestamp(mtime).astimezone()
-                dt_est = dt.astimezone(zoneinfo.ZoneInfo("America/Toronto"))
-                last_updated = dt_est.strftime("%Y-%m-%d %H:%M %Z")
             except Exception as e:
-                return None, f"Error reading local file: {e}", "Unknown"
+                return None, f"Error reading local file: {e}"
         else:
-            return None, "No data found. Please run 'predictor/main.py' or check GitHub Raw URL.", "Unknown"
+            return None, "No data found. Please run 'predictor/main.py' or check GitHub Raw URL."
             
-    return data, source, last_updated
+    return data, source
 
-@st.cache_data
-def load_readme():
-    """Load README.md content dynamically."""
-    if os.path.exists("README.md"):
+@st.cache_data(ttl=60)
+def load_metadata(url):
+    """
+    Load metadata.json (last updated time) from GitHub or local cache.
+    """
+    metadata_url = url.replace("results.json", "metadata.json")
+    local_metadata = LOCAL_FILE.replace("results.json", "metadata.json")
+    
+    # Try fetching from URL first
+    if "YOUR_USERNAME" not in metadata_url and metadata_url.startswith("http"):
         try:
-            with open("README.md", "r", encoding="utf-8") as f:
-                return f.read()
+            res = requests.get(metadata_url, timeout=5)
+            if res.status_code == 200:
+                data = res.json()
+                return data.get("last_updated")
         except Exception:
             pass
+            
+    # Fallback to local file
+    if os.path.exists(local_metadata):
+        try:
+            with open(local_metadata, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                return data.get("last_updated")
+        except Exception:
+            pass
+            
     return None
 
 # ==========================================
@@ -184,17 +187,21 @@ with col_link:
 
 st.markdown("---")
 
-# Collapsible Settings (Tucked away at the top, no sidebar)
-with st.expander("⚙️ Configuration Settings", expanded=False):
-    st.markdown("### Dashboard Config")
-    github_url = st.text_input(
-        "GitHub Raw URL for results.json",
-        value=DEFAULT_URL,
-        help="Input a custom raw results.json URL if you have forked or modified this repository."
-    )
+# Load predictions using session state or default URL
+github_url = st.session_state.get("github_url", DEFAULT_URL)
+data, data_source = load_predictions(github_url)
 
-# Load data and status information
-data, data_source, last_updated = load_predictions(github_url)
+# Load metadata timestamp
+last_updated_raw = load_metadata(github_url)
+if last_updated_raw:
+    try:
+        dt = datetime.fromisoformat(last_updated_raw)
+        dt_est = dt.astimezone(zoneinfo.ZoneInfo("America/Toronto"))
+        last_updated = dt_est.strftime("%Y-%m-%d %H:%M %Z")
+    except Exception:
+        last_updated = "Unknown"
+else:
+    last_updated = "Unknown"
 
 if data is None:
     st.error("❌ Data status: NOT LOADED")
@@ -219,15 +226,15 @@ else:
     
     # Calculate Summary Metrics
     total_matches = len(df)
-    max_exp_pts = df["expected_points"].max()
+    total_exp_pts = int(round(df["expected_points"].sum()))
     avg_exp_pts = df["expected_points"].mean()
     
     col1, col2, col3 = st.columns(3)
-    col1.metric("Matches Predicted", f"{total_matches}")
-    col2.metric("Max Expected Points", f"{max_exp_pts:.3f} pts", help="The match with the highest confidence prediction")
-    col3.metric("Avg Expected Points", f"{avg_exp_pts:.3f} pts", help="Average expected points across all predicted matches")
+    col1.metric("Remaining Matches", f"{total_matches}")
+    col2.metric("Total Expected Points", f"{total_exp_pts}", help="Sum of expected points across all remaining matches")
+    col3.metric("Avg Expected Points per Match", f"{avg_exp_pts:.3f} pts", help="Average expected points per match")
     
-    st.markdown("<br>### 📋 Active Predictions", unsafe_allow_html=True)
+    st.markdown("### 📋 Active Predictions")
     
     # Format columns for presentation (Convert UTC to America/Toronto which matches Santiago de Chile time in June)
     times = pd.to_datetime(df["commence_time"])
@@ -238,16 +245,18 @@ else:
     presentation_df["Kickoff (EST/EDT)"] = times.dt.tz_convert("America/Toronto").dt.strftime("%Y-%m-%d %H:%M %Z")
     presentation_df["Home Team"] = df["home_team"]
     presentation_df["Away Team"] = df["away_team"]
-    presentation_df["Pred Score"] = df.apply(lambda r: f"{r['predicted_home_goals']} - {r['predicted_away_goals']}", axis=1)
-    presentation_df["E[Points]"] = df["expected_points"]
-    presentation_df["Avg Home Odds"] = df["home_odds"]
-    presentation_df["Avg Draw Odds"] = df["draw_odds"]
-    presentation_df["Avg Away Odds"] = df["away_odds"]
+    presentation_df["Pred Score (Optimized)"] = df.apply(lambda r: f"{r['predicted_home_goals']} - {r['predicted_away_goals']}", axis=1)
+    
+    # Add most likely score if columns exist in data
+    if "most_likely_home_goals" in df.columns:
+        presentation_df["Most Likely Score"] = df.apply(lambda r: f"{r['most_likely_home_goals']} - {r['most_likely_away_goals']} ({round(r['most_likely_prob']*100, 1)}%)", axis=1)
+    else:
+        presentation_df["Most Likely Score"] = "N/A"
+        
+    presentation_df["E[Points]"] = df["expected_points"].round(0).astype(int).astype(str) + " pts"
     presentation_df["Home Prob (de-vig)"] = (df["de_vigged_home_prob"] * 100).round(1).astype(str) + "%"
     presentation_df["Draw Prob (de-vig)"] = (df["de_vigged_draw_prob"] * 100).round(1).astype(str) + "%"
     presentation_df["Away Prob (de-vig)"] = (df["de_vigged_away_prob"] * 100).round(1).astype(str) + "%"
-    presentation_df["lambda_H"] = df["lambda_h"]
-    presentation_df["lambda_A"] = df["lambda_a"]
     
     # Display styled predictions dataframe
     st.dataframe(
@@ -255,12 +264,62 @@ else:
         use_container_width=True,
         hide_index=True
     )
+
+st.markdown("<br>", unsafe_allow_html=True)
+
+# Collapsible Settings (Placed between the table and the documentation)
+with st.expander("⚙️ Configuration Settings", expanded=False):
+    st.markdown("### Dashboard Config")
+    new_url = st.text_input(
+        "GitHub Raw URL for results.json",
+        value=github_url,
+        help="Input a custom raw results.json URL if you have forked or modified this repository."
+    )
+    if new_url != github_url:
+        st.session_state["github_url"] = new_url
+        st.rerun()
+
+# Expander: Structured LaTeX Math Documentation & Methodology
+with st.expander("📘 Model Documentation & Mathematical Methodology", expanded=False):
+    st.markdown("""
+    ### Model Methodology Overview
+    This project implements a highly sophisticated, premium-grade predictive system to forecast scorelines for the remaining matches of the FIFA World Cup 2026. The model utilizes real-time market consensus data, mathematical bookmaker margin elimination (De-Vigging), tactical goal expectancy modeling (Dixon-Coles), and a Bayesian decision-theoretic optimizer to maximize tournament bracket points.
     
-    # Expander: Dynamic README file documentation
-    readme_text = load_readme()
-    if readme_text:
-        with st.expander("📘 Readme Documentation & Mathematical Methodology"):
-            st.markdown(readme_text)
+    The prediction pipeline consists of six key statistical stages:
+    """)
+    
+    st.markdown("#### 1. Market Odds Extraction")
+    st.write("The system fetches decimal head-to-head (1X2) odds from **The Odds API**. Financial betting markets serve as highly efficient aggregators of real-time variables (team form, injury updates, climate, and tactical shifts).")
+    
+    st.markdown("#### 2. Market Margin Removal (De-Vigging) via Shin's Method")
+    st.write("Bookmakers price outcomes with a profit commission margin (*overround*), meaning the implied probabilities sum to $> 1.0$. Rather than using simple multiplicative normalization, this model employs **Shin's Method (1993)**, which solves for the proportion of informed trading $z$ and the true probabilities $p_{Home}$, $p_{Draw}$, and $p_{Away}$ such that their sum equals exactly $1.0$:")
+    st.latex(r"\pi_i = (1-z)p_i + z\sqrt{p_i}")
+    
+    st.markdown("#### 3. Goal Expectancy Parameter Inversion")
+    st.write("Using the clean probabilities, the system solves for the underlying goal expectancy parameters—$\\lambda_H$ (Home Expected Goals) and $\\lambda_A$ (Away Expected Goals). This step translates win/draw/loss probabilities into raw offensive and defensive performance intensities.")
+    
+    st.markdown("#### 4. Base Independent Poisson Distribution")
+    st.write("As a baseline, the number of goals scored by the Home team ($X$) and Away team ($Y$) are modeled as independent Poisson random variables:")
+    st.latex(r"P(X = x) = \frac{\lambda_H^x e^{-\lambda_H}}{x!}, \quad P(Y = y) = \frac{\lambda_A^y e^{-\lambda_A}}{y!}")
+    st.write("The joint probability of a specific scoreline $(x, y)$ is calculated as the product of their individual probabilities: $P(X=x, Y=y) = P(X=x) \times P(Y=y)$.")
+    
+    st.markdown("#### 5. Dixon-Coles Low-Scoring Correlation Calibration")
+    st.write("In real-world football, goal outcomes are not completely independent. There is a statistically significant correlation that produces more low-scoring draws (0-0, 1-1) than predicted by independent Poisson distributions. To correct for this, we apply the **Dixon and Coles Model (1997)** with an international tournament adjustment factor $\\rho = -0.13$:")
+    st.latex(r"P_{DC}(X=x, Y=y) = \tau(x, y) \times P(X=x) \times P(Y=y)")
+    st.write("Where the scaling factor $\\tau(x, y)$ adjusts the low scorelines (0-0, 1-0, 0-1, 1-1) dynamically based on the expected goals $\\lambda_H$ and $\\lambda_A$ and the dependency parameter $\\rho$:")
+    st.latex(r"\tau(x,y) = \begin{cases} 1 - \lambda_H \lambda_A \rho & \text{if } (x,y) = (0,0) \\ 1 + \lambda_A \rho & \text{if } (x,y) = (1,0) \\ 1 + \lambda_H \rho & \text{if } (x,y) = (0,1) \\ 1 - \rho & \text{if } (x,y) = (1,1) \\ 1 & \text{otherwise} \end{cases}")
+    
+    st.markdown("#### 6. Bayesian Expected Points Grid Search")
+    st.write("Predicting the single most likely scoreline is mathematically suboptimal for tournament brackets. Your prediction strategy must align with the point structure of your competition:")
+    st.markdown("""
+    *   **Correct Match Outcome (Winner/Draw) (1X2)**: **5 points**
+    *   **Correct Home Goals**: **2 points**
+    *   **Correct Away Goals**: **2 points**
+    *   **Correct Goal Difference**: **1 point**
+    """)
+    st.write("The expected points $\\mathbb{E}[\\text{Points}]$ for any score prediction $P_{pred} = (p_h, p_a)$ given joint probability matrix $P_{DC}$ is:")
+    st.latex(r"\mathbb{E}[\text{Points}(p_h, p_a)] = \sum_{a_h=0}^{5} \sum_{a_a=0}^{5} P_{DC}(a_h, a_a) \times S\Big((p_h, p_a), (a_h, a_a)\Big)")
+    st.write(r"The system executes a discrete grid search over all $(p_h, p_a) \in \{0, 1, 2, 3, 4, 5\}^2$ and selects the prediction that **maximizes this expected value**.")
 
 # Footer credits
 st.markdown(

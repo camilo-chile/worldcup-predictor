@@ -1,5 +1,8 @@
 name: Predict World Cup Games
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+
 on:
   schedule:
     # Run daily 1.5 hours before the two most common match kickoff hours: 19:00 and 01:00 UTC
@@ -40,6 +43,6 @@ jobs:
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add predictor/results.json
-          git commit -m "Auto-update predictions: predictor/results.json [skip ci]" || echo "No changes to commit"
+          git add predictor/results.json predictor/metadata.json
+          git commit -m "Auto-update predictions: results.json & metadata.json [skip ci]" || echo "No changes to commit"
           git push

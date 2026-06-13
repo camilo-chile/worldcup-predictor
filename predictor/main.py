@@ -365,6 +365,13 @@ def main():
         pred_h, pred_a, exp_pts = optimize_score_prediction(prob_matrix)
         print(f"  Optimal Prediction: {pred_h} - {pred_a} (Expected Points: {exp_pts:.3f})")
         
+        # Find most likely score (mode of the joint probability matrix)
+        import numpy as np
+        max_idx = np.unravel_index(np.argmax(prob_matrix), prob_matrix.shape)
+        most_likely_h, most_likely_a = int(max_idx[0]), int(max_idx[1])
+        most_likely_prob = float(prob_matrix[most_likely_h][most_likely_a])
+        print(f"  Most Likely Score: {most_likely_h} - {most_likely_a} (Probability: {most_likely_prob * 100:.1f}%)")
+        
         # Store prediction
         predictions.append({
             "match_id": match_id,
@@ -381,6 +388,9 @@ def main():
             "lambda_a": round(lambda_a, 4),
             "predicted_home_goals": pred_h,
             "predicted_away_goals": pred_a,
+            "most_likely_home_goals": most_likely_h,
+            "most_likely_away_goals": most_likely_a,
+            "most_likely_prob": round(most_likely_prob, 4),
             "expected_points": round(exp_pts, 3)
         })
         
@@ -391,6 +401,19 @@ def main():
         print(f"\nSuccessfully saved predictions for {len(predictions)} matches to '{RESULTS_FILE}'.")
     except Exception as e:
         print(f"Failed to save predictions to JSON file: {e}")
+
+    # Save execution timestamp to metadata.json
+    try:
+        metadata_file = os.path.join(SCRIPT_DIR, "metadata.json")
+        import datetime
+        metadata = {
+            "last_updated": datetime.datetime.now(datetime.timezone.utc).isoformat()
+        }
+        with open(metadata_file, "w", encoding="utf-8") as f:
+            json.dump(metadata, f, indent=4)
+        print(f"Successfully saved metadata to '{metadata_file}'.")
+    except Exception as e:
+        print(f"Failed to save metadata to JSON file: {e}")
 
 if __name__ == "__main__":
     main()

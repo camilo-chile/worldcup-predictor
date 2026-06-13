@@ -1,6 +1,7 @@
 import csv
 import os
 import sys
+import time
 from datetime import datetime, timedelta
 import requests
 from dotenv import load_dotenv
@@ -130,6 +131,26 @@ def create_cron_job(match):
         print(f"❌ Error during API call for Match #{match['match_number']}: {e}")
         return False
 
+def get_existing_cron_jobs():
+    """
+    Fetch the list of existing cron jobs from cron-job.org to prevent duplicates.
+    """
+    headers = {
+        "Authorization": f"Bearer {CRON_JOB_API_KEY}",
+        "Content-Type": "application/json"
+    }
+    url = "https://api.cron-job.org/jobs"
+    try:
+        response = requests.get(url, headers=headers, timeout=10)
+        if response.status_code == 200:
+            return response.json().get("jobs", [])
+        else:
+            print(f"⚠️ Warning: Could not fetch existing cron jobs from cron-job.org (Code {response.status_code}).")
+            return []
+    except Exception as e:
+        print(f"⚠️ Warning: Error fetching existing cron jobs: {e}")
+        return []
+
 def main():
     print("=== World Cup 2026 Cron Scheduler ===")
     
@@ -141,17 +162,39 @@ def main():
     matches = load_matches_from_csv()
     print(f"Parsed {len(matches)} group stage matches remaining.")
     
-    confirm = input(f"\nDo you want to create {len(matches)} cron jobs on cron-job.org? (yes/no): ").strip().lower()
+    print("\nFetching existing jobs from cron-job.org to prevent duplicates...")
+    existing_jobs = get_existing_cron_jobs()
+    existing_titles = {job.get("title") for job in existing_jobs if job.get("title")}
+    
+    matches_to_create = []
+    for match in matches:
+        title = f"WC2026 Match #{match['match_number']}: {match['home']} vs {match['away']}"
+        if title in existing_titles:
+            print(f"ℹ Skipping Match #{match['match_number']} ({match['home']} vs {match['away']}) - Already exists")
+        else:
+            matches_to_create.append(match)
+            
+    if not matches_to_create:
+        print("\nAll remaining matches already have cron jobs created on cron-job.org!")
+        return
+        
+    print(f"\nFound {len(matches_to_create)} missing cron jobs to create.")
+    confirm = input(f"Do you want to create these {len(matches_to_create)} cron jobs? (yes/no): ").strip().lower()
     if confirm not in ("yes", "y"):
         print("Execution cancelled by user.")
         return
         
     success_count = 0
-    for match in matches:
+    for i, match in enumerate(matches_to_create):
+        # Respect rate limits by pausing 1.5 seconds between API calls
+        if i > 0:
+            time.sleep(1.5)
+            
         if create_cron_job(match):
             success_count += 1
             
-    print(f"\nCompleted! Created {success_count}/{len(matches)} cron jobs successfully.")
+    print(f"\nCompleted! Created {success_count}/{len(matches_to_create)} new cron jobs successfully.")
 
 if __name__ == "__main__":
     main()
+

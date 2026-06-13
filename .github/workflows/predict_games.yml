@@ -2,9 +2,10 @@ name: Predict World Cup Games
 
 on:
   schedule:
-    # Run every 2 hours from 10:00 AM to 10:00 PM EDT (14:00 to 02:00 UTC)
-    # This covers all possible kickoff windows (early, afternoon, prime-time, and nightcap) efficiently
-    - cron: '0 0,2,14,16,18,20,22 * * *'
+    # Run daily 1.5 hours before the two most common match kickoff hours: 19:00 and 01:00 UTC
+    # - 17:30 UTC (1.5 hours before 19:00 UTC)
+    # - 23:30 UTC (1.5 hours before 01:00 UTC)
+    - cron: '30 17,23 * * *'
   workflow_dispatch:
     # Allow manual triggering of the workflow from GitHub Actions UI
 

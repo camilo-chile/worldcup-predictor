@@ -187,12 +187,11 @@ with col_link:
 
 st.markdown("---")
 
-# Load predictions using session state or default URL
-github_url = st.session_state.get("github_url", DEFAULT_URL)
-data, data_source = load_predictions(github_url)
+# Load predictions and metadata using DEFAULT_URL
+data, data_source = load_predictions(DEFAULT_URL)
 
 # Load metadata timestamp
-last_updated_raw = load_metadata(github_url)
+last_updated_raw = load_metadata(DEFAULT_URL)
 if last_updated_raw:
     try:
         dt = datetime.fromisoformat(last_updated_raw)
@@ -232,7 +231,7 @@ else:
     col1, col2, col3 = st.columns(3)
     col1.metric("Remaining Matches", f"{total_matches}")
     col2.metric("Total Expected Points", f"{total_exp_pts}", help="Sum of expected points across all remaining matches")
-    col3.metric("Avg Expected Points per Match", f"{avg_exp_pts:.3f} pts", help="Average expected points per match")
+    col3.metric("Avg Expected Points per Match", f"{avg_exp_pts:.1f} pts", help="Average expected points per match")
     
     st.markdown("### 📋 Active Predictions")
     
@@ -266,18 +265,6 @@ else:
     )
 
 st.markdown("<br>", unsafe_allow_html=True)
-
-# Collapsible Settings (Placed between the table and the documentation)
-with st.expander("⚙️ Configuration Settings", expanded=False):
-    st.markdown("### Dashboard Config")
-    new_url = st.text_input(
-        "GitHub Raw URL for results.json",
-        value=github_url,
-        help="Input a custom raw results.json URL if you have forked or modified this repository."
-    )
-    if new_url != github_url:
-        st.session_state["github_url"] = new_url
-        st.rerun()
 
 # Expander: Structured LaTeX Math Documentation & Methodology
 with st.expander("📘 Model Documentation & Mathematical Methodology", expanded=False):

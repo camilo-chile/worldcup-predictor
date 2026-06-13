@@ -2,8 +2,8 @@
     {
         "match_id": "mock_match_1",
         "commence_time": "2026-06-15T18:00:00Z",
-        "home_team": "Brazil",
-        "away_team": "France",
+        "home_team": "Mock Team A",
+        "away_team": "Mock Team B",
         "home_odds": 2.12,
         "draw_odds": 3.23,
         "away_odds": 3.35,
@@ -22,8 +22,8 @@
     {
         "match_id": "mock_match_2",
         "commence_time": "2026-06-16T20:00:00Z",
-        "home_team": "Argentina",
-        "away_team": "Germany",
+        "home_team": "Mock Team C",
+        "away_team": "Mock Team D",
         "home_odds": 1.95,
         "draw_odds": 3.3,
         "away_odds": 3.8,
@@ -42,8 +42,8 @@
     {
         "match_id": "mock_match_3",
         "commence_time": "2026-06-17T15:00:00Z",
-        "home_team": "Spain",
-        "away_team": "England",
+        "home_team": "Mock Team E",
+        "away_team": "Mock Team F",
         "home_odds": 2.5,
         "draw_odds": 3.1,
         "away_odds": 2.9,

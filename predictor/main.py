@@ -29,8 +29,8 @@ MOCK_ODDS_RESPONSE = [
         "id": "mock_match_1",
         "sport_key": "soccer_fifa_world_cup",
         "commence_time": "2026-06-15T18:00:00Z",
-        "home_team": "Brazil",
-        "away_team": "France",
+        "home_team": "Mock Team A",
+        "away_team": "Mock Team B",
         "bookmakers": [
             {
                 "key": "mock_bookmaker_1",
@@ -40,8 +40,8 @@ MOCK_ODDS_RESPONSE = [
                     {
                         "key": "h2h",
                         "outcomes": [
-                            {"name": "Brazil", "price": 2.10},
-                            {"name": "France", "price": 3.40},
+                            {"name": "Mock Team A", "price": 2.10},
+                            {"name": "Mock Team B", "price": 3.40},
                             {"name": "Draw", "price": 3.20}
                         ]
                     }
@@ -55,8 +55,8 @@ MOCK_ODDS_RESPONSE = [
                     {
                         "key": "h2h",
                         "outcomes": [
-                            {"name": "Brazil", "price": 2.15},
-                            {"name": "France", "price": 3.30},
+                            {"name": "Mock Team A", "price": 2.15},
+                            {"name": "Mock Team B", "price": 3.30},
                             {"name": "Draw", "price": 3.25}
                         ]
                     }
@@ -68,8 +68,8 @@ MOCK_ODDS_RESPONSE = [
         "id": "mock_match_2",
         "sport_key": "soccer_fifa_world_cup",
         "commence_time": "2026-06-16T20:00:00Z",
-        "home_team": "Argentina",
-        "away_team": "Germany",
+        "home_team": "Mock Team C",
+        "away_team": "Mock Team D",
         "bookmakers": [
             {
                 "key": "mock_bookmaker_1",
@@ -79,8 +79,8 @@ MOCK_ODDS_RESPONSE = [
                     {
                         "key": "h2h",
                         "outcomes": [
-                            {"name": "Argentina", "price": 1.95},
-                            {"name": "Germany", "price": 3.80},
+                            {"name": "Mock Team C", "price": 1.95},
+                            {"name": "Mock Team D", "price": 3.80},
                             {"name": "Draw", "price": 3.30}
                         ]
                     }
@@ -92,8 +92,8 @@ MOCK_ODDS_RESPONSE = [
         "id": "mock_match_3",
         "sport_key": "soccer_fifa_world_cup",
         "commence_time": "2026-06-17T15:00:00Z",
-        "home_team": "Spain",
-        "away_team": "England",
+        "home_team": "Mock Team E",
+        "away_team": "Mock Team F",
         "bookmakers": [
             {
                 "key": "mock_bookmaker_1",
@@ -103,8 +103,8 @@ MOCK_ODDS_RESPONSE = [
                     {
                         "key": "h2h",
                         "outcomes": [
-                            {"name": "Spain", "price": 2.50},
-                            {"name": "England", "price": 2.90},
+                            {"name": "Mock Team E", "price": 2.50},
+                            {"name": "Mock Team F", "price": 2.90},
                             {"name": "Draw", "price": 3.10}
                         ]
                     }

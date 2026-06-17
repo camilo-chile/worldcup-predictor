@@ -57,7 +57,7 @@ def load_matches_from_csv(csv_path=None):
             match_num = int(row.get("Match Number", 0))
             # Filter for Matches 3 to 72 inclusive (the 70 remaining group stage matches)
             if 3 <= match_num <= 72:
-                exec_time = kickoff - timedelta(minutes=45)
+                exec_time = kickoff - timedelta(minutes=30)
                 matches.append({
                     "match_number": match_num,
                     "home": row.get("Home Team", "").strip(),
@@ -97,6 +97,7 @@ def create_cron_job(match):
             "title": title,
             "url": github_webhook_url,
             "enabled": True,
+            "requestMethod": 1, # HTTP POST method (0=GET, 1=POST)
             "schedule": {
                 "timezone": "UTC",
                 "minutes": minutes,
@@ -106,7 +107,7 @@ def create_cron_job(match):
                 "wdays": wdays
             },
             "extendedData": {
-                "method": 1, # HTTP POST method in cron-job.org API
+                "method": 1, # HTTP POST method for compatibility
                 "headers": {
                     "Accept": "application/vnd.github.v3+json",
                     "User-Agent": "cron-job-org-client",

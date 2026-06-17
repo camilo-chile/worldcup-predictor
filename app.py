@@ -196,7 +196,7 @@ if last_updated_raw:
     try:
         dt = datetime.fromisoformat(last_updated_raw)
         dt_est = dt.astimezone(zoneinfo.ZoneInfo("America/Toronto"))
-        last_updated = dt_est.strftime("%Y-%m-%d %H:%M %Z")
+        last_updated = dt_est.strftime("%Y-%m-%d %H:%M EST")
     except Exception:
         last_updated = "Unknown"
 else:
@@ -211,7 +211,7 @@ else:
         f"""
         <div style="background-color: rgba(59, 130, 246, 0.1); border-left: 4px solid #3B82F6; padding: 14px 20px; border-radius: 8px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center;">
             <div>
-                <span style="color: #9CA3AF; font-size: 0.95rem;">Last Model Update (EST/EDT):</span>
+                <span style="color: #9CA3AF; font-size: 0.95rem;">Last Model Update (EST):</span>
                 <strong style="color: #3B82F6; font-size: 1.1rem; margin-left: 8px;">{last_updated}</strong>
             </div>
             <span style="color: #6B7280; font-size: 0.85rem; font-style: italic;">Source: {data_source}</span>
@@ -241,7 +241,7 @@ else:
         times = times.dt.tz_localize("UTC")
         
     presentation_df = pd.DataFrame()
-    presentation_df["Kickoff (EST/EDT)"] = times.dt.tz_convert("America/Toronto").dt.strftime("%Y-%m-%d %H:%M %Z")
+    presentation_df["Kickoff (EST)"] = times.dt.tz_convert("America/Toronto").dt.strftime("%Y-%m-%d %H:%M EST")
     presentation_df["Home Team"] = df["home_team"]
     presentation_df["Away Team"] = df["away_team"]
     presentation_df["Pred Score (Optimized)"] = df.apply(lambda r: f"{r['predicted_home_goals']} - {r['predicted_away_goals']}", axis=1)

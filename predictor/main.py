@@ -7,6 +7,7 @@ and optimizes score predictions using Expected Points grid search.
 import os
 import json
 import math
+import datetime
 import requests
 import pandas as pd
 import penaltyblog as pb
@@ -183,8 +184,10 @@ def parse_match_odds(match):
     Returns:
         (home_odds, draw_odds, away_odds, over_odds, under_odds, totals_line) or None
     """
-    home_team = match["home_team"]
-    away_team = match["away_team"]
+    home_team = match.get("home_team")
+    away_team = match.get("away_team")
+    if not home_team or not away_team:
+        return None
     
     sum_home, sum_draw, sum_away = 0.0, 0.0, 0.0
     h2h_count = 0
@@ -270,18 +273,22 @@ def de_vig_odds(home_odds, draw_odds, away_odds):
         return result.probabilities
     except Exception as e:
         print(f"Shin de-vigging failed for {odds}: {e}. Falling back to multiplicative.")
-        implied = [1.0 / o for o in odds]
+        implied = [1.0 / o if (o and o > 0) else 0.0 for o in odds]
         total = sum(implied)
-        return [p / total for p in implied]
+        if total > 0:
+            return [p / total for p in implied]
+        return [0.3333, 0.3333, 0.3333]
 
 def de_vig_totals(over_price, under_price):
     """
     De-vig Over/Under odds using standard multiplicative de-vigging.
     """
-    implied_over = 1.0 / over_price
-    implied_under = 1.0 / under_price
+    implied_over = 1.0 / over_price if (over_price and over_price > 0) else 0.0
+    implied_under = 1.0 / under_price if (under_price and under_price > 0) else 0.0
     sum_implied = implied_over + implied_under
-    return implied_over / sum_implied, implied_under / sum_implied
+    if sum_implied > 0:
+        return implied_over / sum_implied, implied_under / sum_implied
+    return 0.5, 0.5
 
 def poisson_pmf(k, mu):
     """Calculate Poisson Probability Mass Function."""
@@ -420,11 +427,19 @@ def calculate_lambdas(home_prob, draw_prob, away_prob, over_prob=None, under_pro
     except Exception as e:
         print(f"Error calculating goal expectancy lambdas: {e}")
         
+    if home_prob > 0 and away_prob > 0:
+        # Non-linear heuristic mapping win probability ratio to lambda ratio
+        ratio = (home_prob / away_prob) ** 0.6
+        lambda_a = 2.6 / (ratio + 1.0)
+        lambda_h = 2.6 - lambda_a
+        return float(lambda_h), float(lambda_a)
+        
     total_prob = home_prob + away_prob
     if total_prob > 0:
         ratio = home_prob / total_prob
         return float(ratio * 2.6), float((1.0 - ratio) * 2.6)
     return 1.4, 1.2
+
 
 def build_probability_grid(lambda_h, lambda_a):
     """
@@ -571,7 +586,7 @@ def update_history_with_scores(history, scores_data):
                     score_info = {"home": home_score, "away": away_score}
                     if event_id:
                         scores_by_id[event_id] = score_info
-                    if home_team and away_team:
+                    if isinstance(home_team, str) and isinstance(away_team, str):
                         scores_by_teams[(home_team.lower(), away_team.lower())] = score_info
             except Exception as e:
                 print(f"Error parsing event score: {e}")
@@ -582,8 +597,8 @@ def update_history_with_scores(history, scores_data):
             continue
             
         match_id = entry.get("match_id")
-        home_team = entry.get("home_team", "")
-        away_team = entry.get("away_team", "")
+        home_team = entry.get("home_team") or ""
+        away_team = entry.get("away_team") or ""
         
         score_info = None
         if match_id in scores_by_id:
@@ -622,6 +637,7 @@ def update_history_with_scores(history, scores_data):
 
 def main():
     print("=== Starting World Cup Score Predictor ===")
+    now_utc = datetime.datetime.now(datetime.timezone.utc)
     raw_matches = fetch_odds()
     predictions = []
     
@@ -631,7 +647,8 @@ def main():
         try:
             with open(RESULTS_FILE, "r", encoding="utf-8") as f:
                 old_res = json.load(f)
-                existing_results_dict = {r["match_id"]: r for r in old_res if "match_id" in r}
+                if isinstance(old_res, list):
+                    existing_results_dict = {r["match_id"]: r for r in old_res if isinstance(r, dict) and "match_id" in r}
         except Exception as e:
             print(f"Failed to load existing results: {e}")
             
@@ -644,7 +661,6 @@ def main():
         print(f"\nProcessing match: {home_team} vs {away_team} ({commence_time})")
         
         # Check if kickoff starts within 15 minutes or is in the past
-        import datetime
         now_utc = datetime.datetime.now(datetime.timezone.utc)
         commence_time_dt = None
         if commence_time:
@@ -724,7 +740,9 @@ def main():
     if os.path.exists(RESULTS_FILE):
         try:
             with open(RESULTS_FILE, "r", encoding="utf-8") as f:
-                old_predictions = json.load(f)
+                loaded = json.load(f)
+                if isinstance(loaded, list):
+                    old_predictions = loaded
         except Exception as e:
             print(f"Failed to load old predictions for archiving: {e}")
             
@@ -732,14 +750,18 @@ def main():
     if os.path.exists(HISTORY_FILE):
         try:
             with open(HISTORY_FILE, "r", encoding="utf-8") as f:
-                history = json.load(f)
+                loaded = json.load(f)
+                if isinstance(loaded, list):
+                    history = loaded
         except Exception as e:
             print(f"Failed to load existing history: {e}")
             
-    archived_ids = {m["match_id"] for m in history if "match_id" in m}
+    archived_ids = {m["match_id"] for m in history if isinstance(m, dict) and "match_id" in m}
     
     archived_count = 0
     for old_match in old_predictions:
+        if not isinstance(old_match, dict):
+            continue
         match_id = old_match.get("match_id")
         commence_time_str = old_match.get("commence_time")
         
@@ -765,7 +787,8 @@ def main():
         print(f"Updated actual scores/points for {updated_scores_count} matches in history.")
         
     try:
-        history.sort(key=lambda x: x.get("commence_time", ""))
+        history = [m for m in history if isinstance(m, dict)]
+        history.sort(key=lambda x: x.get("commence_time") or "")
         with open(HISTORY_FILE, "w", encoding="utf-8") as f:
             json.dump(history, f, indent=4)
         if archived_count > 0:

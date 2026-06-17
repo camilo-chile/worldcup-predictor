@@ -194,7 +194,13 @@ def parse_match_odds(match):
     
     totals_data = {}
     
-    for bookmaker in match.get("bookmakers", []):
+    # Filter and prioritize sharp bookmakers (pinnacle, betfair_ex)
+    sharp_keys = {"pinnacle", "betfair_ex"}
+    available_bookmakers = match.get("bookmakers", [])
+    sharp_bookmakers = [b for b in available_bookmakers if b.get("key") in sharp_keys]
+    target_bookmakers = sharp_bookmakers if sharp_bookmakers else available_bookmakers
+    
+    for bookmaker in target_bookmakers:
         for market in bookmaker.get("markets", []):
             market_key = market.get("key")
             
@@ -316,11 +322,35 @@ def solve_lambda_total(under_prob, line):
             high = mid
     return (low + high) / 2
 
-def get_dixon_coles_probs(lambda_h, lambda_a, rho=-0.13):
+def get_dynamic_rho(lambda_h, lambda_a):
+    """
+    Calibrate Dixon-Coles rho dynamically based on goal expectancies.
+    Decays correlation for high-scoring games and guarantees mathematical validity
+    (non-negative probabilities) by enforcing the Dixon-Coles parameter bounds.
+    """
+    if lambda_h <= 0 or lambda_a <= 0:
+        return 0.0
+        
+    lambda_total = lambda_h + lambda_a
+    # Base rho of -0.13, decaying as total expected goals increase
+    rho_target = -0.13 * math.exp(-0.2 * (lambda_total - 2.5))
+    
+    # Enforce Dixon-Coles mathematical bounds to prevent negative probabilities:
+    # rho must be >= -1/lambda_h and >= -1/lambda_a
+    lower_bound = -0.95 * min(1.0 / lambda_h, 1.0 / lambda_a)
+    
+    # Clamp to [lower_bound, 0.0]
+    rho = max(rho_target, lower_bound)
+    return min(0.0, rho)
+
+def get_dixon_coles_probs(lambda_h, lambda_a, rho=None):
     """
     Calculate Home/Draw/Away win probabilities using Dixon-Coles adjustments.
     Uses a 12x12 matrix to cover almost all probability mass.
     """
+    if rho is None:
+        rho = get_dynamic_rho(lambda_h, lambda_a)
+        
     max_g = 12
     matrix = [[0.0] * max_g for _ in range(max_g)]
     
@@ -443,14 +473,15 @@ def calculate_lambdas(home_prob, draw_prob, away_prob, over_prob=None, under_pro
 
 def build_probability_grid(lambda_h, lambda_a):
     """
-    Build a 9x9 joint probability grid using Dixon-Coles with rho=-0.13.
+    Build a 9x9 joint probability grid using Dixon-Coles with dynamic rho.
     Grid is normalized to sum to 1.0.
     """
+    rho = get_dynamic_rho(lambda_h, lambda_a)
     try:
         grid_obj = pb.models.create_dixon_coles_grid(
             home_lambda=lambda_h,
             away_lambda=lambda_a,
-            rho=-0.13,
+            rho=rho,
             max_goals=8
         )
         matrix = grid_obj.goal_matrix
@@ -464,14 +495,14 @@ def build_probability_grid(lambda_h, lambda_a):
 
 def build_fallback_grid(lambda_h, lambda_a):
     """
-    Manual fallback 9x9 grid with Dixon-Coles adjustment using rho=-0.13.
+    Manual fallback 9x9 grid with Dixon-Coles adjustment using dynamic rho.
     """
+    rho = get_dynamic_rho(lambda_h, lambda_a)
     matrix = [[0.0] * 9 for _ in range(9)]
     for h in range(9):
         for a in range(9):
             matrix[h][a] = poisson_pmf(h, lambda_h) * poisson_pmf(a, lambda_a)
             
-    rho = -0.13
     if lambda_h > 0 and lambda_a > 0:
         matrix[0][0] *= max(0.0, 1 - lambda_h * lambda_a * rho)
         matrix[1][0] *= max(0.0, 1 + lambda_a * rho)

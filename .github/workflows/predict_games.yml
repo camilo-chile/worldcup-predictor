@@ -41,6 +41,6 @@ jobs:
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add predictor/results.json predictor/metadata.json
-          git commit -m "Auto-update predictions: results.json & metadata.json [skip ci]" || echo "No changes to commit"
+          git add predictor/results.json predictor/metadata.json predictor/history.json
+          git commit -m "Auto-update predictions: results, metadata & history [skip ci]" || echo "No changes to commit"
           git push

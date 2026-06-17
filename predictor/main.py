@@ -394,6 +394,62 @@ def main():
             "expected_points": round(exp_pts, 3)
         })
         
+    # Archive past predictions from old results.json into history.json
+    HISTORY_FILE = os.path.join(SCRIPT_DIR, "history.json")
+    old_predictions = []
+    if os.path.exists(RESULTS_FILE):
+        try:
+            with open(RESULTS_FILE, "r", encoding="utf-8") as f:
+                old_predictions = json.load(f)
+        except Exception as e:
+            print(f"Failed to load old predictions for archiving: {e}")
+            
+    history = []
+    if os.path.exists(HISTORY_FILE):
+        try:
+            with open(HISTORY_FILE, "r", encoding="utf-8") as f:
+                history = json.load(f)
+        except Exception as e:
+            print(f"Failed to load existing history: {e}")
+            
+    # Create a set of already archived match IDs
+    archived_ids = {m["match_id"] for m in history if "match_id" in m}
+    
+    import datetime
+    now_utc = datetime.datetime.now(datetime.timezone.utc)
+    
+    archived_count = 0
+    for old_match in old_predictions:
+        match_id = old_match.get("match_id")
+        commence_time_str = old_match.get("commence_time")
+        
+        # Don't archive mock matches
+        if not match_id or "mock" in str(match_id):
+            continue
+            
+        if commence_time_str:
+            try:
+                # Format is ISO e.g. 2026-06-15T18:00:00Z
+                commence_time = datetime.datetime.fromisoformat(commence_time_str.replace("Z", "+00:00"))
+                # If match kickoff has passed, archive it
+                if commence_time <= now_utc:
+                    if match_id not in archived_ids:
+                        history.append(old_match)
+                        archived_ids.add(match_id)
+                        archived_count += 1
+            except Exception as e:
+                print(f"Error parsing commence_time for archiving: {e}")
+                
+    if archived_count > 0:
+        try:
+            # Sort history chronologically by kickoff time
+            history.sort(key=lambda x: x.get("commence_time", ""))
+            with open(HISTORY_FILE, "w", encoding="utf-8") as f:
+                json.dump(history, f, indent=4)
+            print(f"Archived {archived_count} new past predictions to '{HISTORY_FILE}'.")
+        except Exception as e:
+            print(f"Failed to save history: {e}")
+
     # Save predictions to results.json
     try:
         with open(RESULTS_FILE, "w", encoding="utf-8") as f:

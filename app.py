@@ -162,6 +162,39 @@ def load_metadata(url):
             
     return None
 
+HISTORY_URL = "https://raw.githubusercontent.com/camilo-chile/worldcup-predictor/main/predictor/history.json"
+LOCAL_HISTORY_FILE = "predictor/history.json"
+
+@st.cache_data(ttl=60)
+def load_history(url):
+    """
+    Fetch prediction history from raw GitHub URL or fallback to local file.
+    """
+    source = "Unknown"
+    data = None
+    
+    if "YOUR_USERNAME" not in url and url.startswith("http"):
+        try:
+            import time
+            bust_url = f"{url}?t={int(time.time() // 60)}"
+            res = requests.get(bust_url, timeout=5)
+            if res.status_code == 200:
+                data = res.json()
+                source = "GitHub Repository"
+        except Exception:
+            pass
+            
+    if data is None:
+        if os.path.exists(LOCAL_HISTORY_FILE):
+            try:
+                with open(LOCAL_HISTORY_FILE, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                source = "Local System Cache"
+            except Exception:
+                pass
+                
+    return data, source
+
 # ==========================================
 # MAIN DASHBOARD LAYOUT
 # ==========================================
@@ -263,6 +296,41 @@ else:
         use_container_width=True,
         hide_index=True
     )
+    
+    # Load and display prediction history
+    history_data, history_source = load_history(HISTORY_URL)
+    if history_data:
+        st.markdown("<br>", unsafe_allow_html=True)
+        st.markdown("### 📜 Past Predictions & History")
+        
+        hist_df = pd.DataFrame(history_data)
+        
+        # Format columns for presentation
+        h_times = pd.to_datetime(hist_df["commence_time"])
+        if h_times.dt.tz is None:
+            h_times = h_times.dt.tz_localize("UTC")
+            
+        hist_presentation = pd.DataFrame()
+        hist_presentation["Kickoff (EST)"] = h_times.dt.tz_convert("America/Toronto").dt.strftime("%Y-%m-%d %H:%M EST")
+        hist_presentation["Home Team"] = hist_df["home_team"]
+        hist_presentation["Away Team"] = hist_df["away_team"]
+        hist_presentation["Pred Score (Optimized)"] = hist_df.apply(lambda r: f"{r['predicted_home_goals']} - {r['predicted_away_goals']}", axis=1)
+        
+        if "most_likely_home_goals" in hist_df.columns:
+            hist_presentation["Most Likely Score"] = hist_df.apply(lambda r: f"{r['most_likely_home_goals']} - {r['most_likely_away_goals']} ({round(r['most_likely_prob']*100, 1)}%)", axis=1)
+        else:
+            hist_presentation["Most Likely Score"] = "N/A"
+            
+        hist_presentation["E[Points]"] = hist_df["expected_points"].round(0).astype(int).astype(str) + " pts"
+        hist_presentation["Home Prob (de-vig)"] = (hist_df["de_vigged_home_prob"] * 100).round(1).astype(str) + "%"
+        hist_presentation["Draw Prob (de-vig)"] = (hist_df["de_vigged_draw_prob"] * 100).round(1).astype(str) + "%"
+        hist_presentation["Away Prob (de-vig)"] = (hist_df["de_vigged_away_prob"] * 100).round(1).astype(str) + "%"
+        
+        st.dataframe(
+            hist_presentation,
+            use_container_width=True,
+            hide_index=True
+        )
 
 st.markdown("<br>", unsafe_allow_html=True)
 

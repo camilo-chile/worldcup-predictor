@@ -19,7 +19,7 @@ load_dotenv()
 API_KEY = os.getenv("THE_ODDS_API_KEY", "YOUR_API_KEY")
 SPORT = "soccer_fifa_world_cup"
 REGION = "eu,us,uk"
-MARKET = "h2h"
+MARKET = "h2h,totals"
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 RESULTS_FILE = os.path.join(SCRIPT_DIR, "results.json")
 
@@ -44,6 +44,13 @@ MOCK_ODDS_RESPONSE = [
                             {"name": "Mock Team B", "price": 3.40},
                             {"name": "Draw", "price": 3.20}
                         ]
+                    },
+                    {
+                        "key": "totals",
+                        "outcomes": [
+                            {"name": "Over", "price": 1.95, "point": 2.5},
+                            {"name": "Under", "price": 1.85, "point": 2.5}
+                        ]
                     }
                 ]
             },
@@ -58,6 +65,13 @@ MOCK_ODDS_RESPONSE = [
                             {"name": "Mock Team A", "price": 2.15},
                             {"name": "Mock Team B", "price": 3.30},
                             {"name": "Draw", "price": 3.25}
+                        ]
+                    },
+                    {
+                        "key": "totals",
+                        "outcomes": [
+                            {"name": "Over", "price": 1.90, "point": 2.5},
+                            {"name": "Under", "price": 1.90, "point": 2.5}
                         ]
                     }
                 ]
@@ -83,6 +97,13 @@ MOCK_ODDS_RESPONSE = [
                             {"name": "Mock Team D", "price": 3.80},
                             {"name": "Draw", "price": 3.30}
                         ]
+                    },
+                    {
+                        "key": "totals",
+                        "outcomes": [
+                            {"name": "Over", "price": 1.80, "point": 2.5},
+                            {"name": "Under", "price": 2.00, "point": 2.5}
+                        ]
                     }
                 ]
             }
@@ -106,6 +127,13 @@ MOCK_ODDS_RESPONSE = [
                             {"name": "Mock Team E", "price": 2.50},
                             {"name": "Mock Team F", "price": 2.90},
                             {"name": "Draw", "price": 3.10}
+                        ]
+                    },
+                    {
+                        "key": "totals",
+                        "outcomes": [
+                            {"name": "Over", "price": 2.10, "point": 2.5},
+                            {"name": "Under", "price": 1.70, "point": 2.5}
                         ]
                     }
                 ]
@@ -150,17 +178,24 @@ def fetch_odds():
 
 def parse_match_odds(match):
     """
-    Calculate average odds for home win, draw, and away win across all bookmakers.
+    Calculate average odds for home win, draw, away win, and totals (Over/Under).
+    Group totals by their 'point' value and choose the line closest to 2.5.
+    Returns:
+        (home_odds, draw_odds, away_odds, over_odds, under_odds, totals_line) or None
     """
     home_team = match["home_team"]
     away_team = match["away_team"]
     
     sum_home, sum_draw, sum_away = 0.0, 0.0, 0.0
-    count = 0
+    h2h_count = 0
+    
+    totals_data = {}
     
     for bookmaker in match.get("bookmakers", []):
         for market in bookmaker.get("markets", []):
-            if market.get("key") == "h2h":
+            market_key = market.get("key")
+            
+            if market_key == "h2h":
                 outcomes = market.get("outcomes", [])
                 odds_dict = {}
                 for outcome in outcomes:
@@ -177,11 +212,52 @@ def parse_match_odds(match):
                     sum_home += h_price
                     sum_away += a_price
                     sum_draw += d_price
-                    count += 1
+                    h2h_count += 1
                     
-    if count > 0:
-        return sum_home / count, sum_draw / count, sum_away / count
-    return None
+            elif market_key == "totals":
+                outcomes = market.get("outcomes", [])
+                for outcome in outcomes:
+                    name = outcome.get("name")
+                    price = outcome.get("price")
+                    point = outcome.get("point")
+                    
+                    if name and price is not None and point is not None:
+                        point = float(point)
+                        price = float(price)
+                        
+                        if abs(point - round(point)) == 0.5:
+                            if point not in totals_data:
+                                totals_data[point] = {"over": [], "under": []}
+                            if name.lower() == "over":
+                                totals_data[point]["over"].append(price)
+                            elif name.lower() == "under":
+                                totals_data[point]["under"].append(price)
+                                
+    h2h_odds = None
+    if h2h_count > 0:
+        h2h_odds = (sum_home / h2h_count, sum_draw / h2h_count, sum_away / h2h_count)
+    else:
+        return None
+        
+    totals_odds = (None, None, None)
+    best_point = None
+    min_diff = 999.0
+    
+    for point, data in totals_data.items():
+        overs = data["over"]
+        unders = data["under"]
+        if overs and unders:
+            diff = abs(point - 2.5)
+            if diff < min_diff:
+                min_diff = diff
+                best_point = point
+                
+    if best_point is not None:
+        avg_over = sum(totals_data[best_point]["over"]) / len(totals_data[best_point]["over"])
+        avg_under = sum(totals_data[best_point]["under"]) / len(totals_data[best_point]["under"])
+        totals_odds = (avg_over, avg_under, best_point)
+        
+    return h2h_odds[0], h2h_odds[1], h2h_odds[2], totals_odds[0], totals_odds[1], totals_odds[2]
 
 def de_vig_odds(home_odds, draw_odds, away_odds):
     """
@@ -198,11 +274,137 @@ def de_vig_odds(home_odds, draw_odds, away_odds):
         total = sum(implied)
         return [p / total for p in implied]
 
-def calculate_lambdas(home_prob, draw_prob, away_prob):
+def de_vig_totals(over_price, under_price):
     """
-    Infer goal expectations (lambdas) from de-vigged 1X2 probabilities
-    using Dixon-Coles model with a default international rho of -0.13.
+    De-vig Over/Under odds using standard multiplicative de-vigging.
     """
+    implied_over = 1.0 / over_price
+    implied_under = 1.0 / under_price
+    sum_implied = implied_over + implied_under
+    return implied_over / sum_implied, implied_under / sum_implied
+
+def poisson_pmf(k, mu):
+    """Calculate Poisson Probability Mass Function."""
+    if mu <= 0:
+        return 1.0 if k == 0 else 0.0
+    return (mu ** k) * math.exp(-mu) / math.factorial(k)
+
+def poisson_cdf(k, mu):
+    """Calculate Poisson Cumulative Distribution Function."""
+    return sum(poisson_pmf(i, mu) for i in range(k + 1))
+
+def solve_lambda_total(under_prob, line):
+    """
+    Solve for lambda_total such that Poisson CDF at floor(line) matches under_prob.
+    Uses binary search.
+    """
+    k = math.floor(line)
+    low, high = 0.001, 20.0
+    for _ in range(30):
+        mid = (low + high) / 2
+        prob = poisson_cdf(k, mid)
+        if prob > under_prob:
+            low = mid
+        else:
+            high = mid
+    return (low + high) / 2
+
+def get_dixon_coles_probs(lambda_h, lambda_a, rho=-0.13):
+    """
+    Calculate Home/Draw/Away win probabilities using Dixon-Coles adjustments.
+    Uses a 12x12 matrix to cover almost all probability mass.
+    """
+    max_g = 12
+    matrix = [[0.0] * max_g for _ in range(max_g)]
+    
+    h_probs = [poisson_pmf(i, lambda_h) for i in range(max_g)]
+    a_probs = [poisson_pmf(i, lambda_a) for i in range(max_g)]
+    
+    for h in range(max_g):
+        for a in range(max_g):
+            matrix[h][a] = h_probs[h] * a_probs[a]
+            
+    if lambda_h > 0 and lambda_a > 0:
+        tau_00 = max(0.0, 1 - lambda_h * lambda_a * rho)
+        tau_10 = max(0.0, 1 + lambda_a * rho)
+        tau_01 = max(0.0, 1 + lambda_h * rho)
+        tau_11 = max(0.0, 1 - rho)
+        
+        matrix[0][0] *= tau_00
+        matrix[1][0] *= tau_10
+        matrix[0][1] *= tau_01
+        matrix[1][1] *= tau_11
+        
+    total = sum(sum(row) for row in matrix)
+    if total > 0:
+        for h in range(max_g):
+            for a in range(max_g):
+                matrix[h][a] /= total
+                
+    p_home = 0.0
+    p_draw = 0.0
+    p_away = 0.0
+    for h in range(max_g):
+        for a in range(max_g):
+            prob = matrix[h][a]
+            if h > a:
+                p_home += prob
+            elif h < a:
+                p_away += prob
+            else:
+                p_draw += prob
+                
+    return p_home, p_draw, p_away
+
+def solve_ratio(lambda_total, home_prob, draw_prob, away_prob):
+    """
+    Solve for ratio r = lambda_H / lambda_total using coarse-to-fine search
+    to match H2H de-vigged probabilities.
+    """
+    best_r = 0.5
+    min_error = 1e9
+    
+    for i in range(1, 100):
+        r = i / 100.0
+        lh = r * lambda_total
+        la = (1.0 - r) * lambda_total
+        ph, pd, pa = get_dixon_coles_probs(lh, la)
+        error = (ph - home_prob)**2 + (pd - draw_prob)**2 + (pa - away_prob)**2
+        if error < min_error:
+            min_error = error
+            best_r = r
+            
+    r_start = max(0.001, best_r - 0.01)
+    r_end = min(0.999, best_r + 0.01)
+    for i in range(200):
+        r = r_start + (r_end - r_start) * (i / 200.0)
+        lh = r * lambda_total
+        la = (1.0 - r) * lambda_total
+        ph, pd, pa = get_dixon_coles_probs(lh, la)
+        error = (ph - home_prob)**2 + (pd - draw_prob)**2 + (pa - away_prob)**2
+        if error < min_error:
+            min_error = error
+            best_r = r
+            
+    return best_r
+
+def calculate_lambdas(home_prob, draw_prob, away_prob, over_prob=None, under_prob=None, totals_line=None):
+    """
+    Infer goal expectancies (lambda_H, lambda_A) from de-vigged H2H and Over/Under probabilities.
+    If totals odds are available, solves for lambda_total from totals, and then
+    solves for the ratio r using H2H probabilities.
+    If totals are not available, falls back to Dixon-Coles goal expectancy from H2H.
+    """
+    if over_prob is not None and under_prob is not None and totals_line is not None:
+        try:
+            lambda_total = solve_lambda_total(under_prob, totals_line)
+            r = solve_ratio(lambda_total, home_prob, draw_prob, away_prob)
+            lambda_h = r * lambda_total
+            lambda_a = (1.0 - r) * lambda_total
+            return lambda_h, lambda_a
+        except Exception as e:
+            print(f"Error solving lambdas using H2H + Totals: {e}. Falling back to H2H only.")
+            
     try:
         res = pb.models.goal_expectancy(
             home=home_prob,
@@ -218,16 +420,15 @@ def calculate_lambdas(home_prob, draw_prob, away_prob):
     except Exception as e:
         print(f"Error calculating goal expectancy lambdas: {e}")
         
-    # Robust mathematical fallback if solver fails
     total_prob = home_prob + away_prob
     if total_prob > 0:
         ratio = home_prob / total_prob
-        return float(ratio * 1.5), float((1.0 - ratio) * 1.3)
+        return float(ratio * 2.6), float((1.0 - ratio) * 2.6)
     return 1.4, 1.2
 
 def build_probability_grid(lambda_h, lambda_a):
     """
-    Build a 6x6 joint probability grid using Dixon-Coles with rho=-0.13.
+    Build a 9x9 joint probability grid using Dixon-Coles with rho=-0.13.
     Grid is normalized to sum to 1.0.
     """
     try:
@@ -235,7 +436,7 @@ def build_probability_grid(lambda_h, lambda_a):
             home_lambda=lambda_h,
             away_lambda=lambda_a,
             rho=-0.13,
-            max_goals=5
+            max_goals=8
         )
         matrix = grid_obj.goal_matrix
         matrix_sum = matrix.sum()
@@ -246,22 +447,15 @@ def build_probability_grid(lambda_h, lambda_a):
         print(f"create_dixon_coles_grid failed: {e}. Using manual Poisson grid fallback.")
         return build_fallback_grid(lambda_h, lambda_a)
 
-def poisson_pmf(k, mu):
-    """Calculate Poisson Probability Mass Function."""
-    if mu <= 0:
-        return 1.0 if k == 0 else 0.0
-    return (mu ** k) * math.exp(-mu) / math.factorial(k)
-
 def build_fallback_grid(lambda_h, lambda_a):
     """
-    Manual fallback 6x6 grid with Dixon-Coles adjustment using rho=-0.13.
+    Manual fallback 9x9 grid with Dixon-Coles adjustment using rho=-0.13.
     """
-    matrix = [[0.0] * 6 for _ in range(6)]
-    for h in range(6):
-        for a in range(6):
+    matrix = [[0.0] * 9 for _ in range(9)]
+    for h in range(9):
+        for a in range(9):
             matrix[h][a] = poisson_pmf(h, lambda_h) * poisson_pmf(a, lambda_a)
             
-    # Apply standard Dixon-Coles adjustment for low scores
     rho = -0.13
     if lambda_h > 0 and lambda_a > 0:
         matrix[0][0] *= max(0.0, 1 - lambda_h * lambda_a * rho)
@@ -269,18 +463,17 @@ def build_fallback_grid(lambda_h, lambda_a):
         matrix[0][1] *= max(0.0, 1 + lambda_h * rho)
         matrix[1][1] *= max(0.0, 1 - rho)
         
-    # Normalize
     total = sum(sum(row) for row in matrix)
     if total > 0:
-        for h in range(6):
-            for a in range(6):
+        for h in range(9):
+            for a in range(9):
                 matrix[h][a] /= total
     import numpy as np
     return np.array(matrix)
 
 def optimize_score_prediction(prob_matrix):
     """
-    Perform a grid search over all possible score predictions P_H, P_A in [0..5]
+    Perform a grid search over all possible score predictions P_H, P_A in [0..8]
     to maximize Expected Points based on World Cup scoring rules:
     - Correct Outcome (1X2): 5 pts
     - Correct Home Goals: 2 pts
@@ -289,33 +482,28 @@ def optimize_score_prediction(prob_matrix):
     """
     best_h, best_a = 0, 0
     best_expected_points = -1.0
+    n_goals = prob_matrix.shape[0]
     
-    # Grid search over predictions P_H, P_A in [0..5]
-    for p_h in range(6):
-        for p_a in range(6):
+    for p_h in range(n_goals):
+        for p_a in range(n_goals):
             expected_points = 0.0
             
-            # Sum expected points across all possible actual outcomes A_H, A_A
-            for a_h in range(6):
-                for a_a in range(6):
+            for a_h in range(n_goals):
+                for a_a in range(n_goals):
                     prob = prob_matrix[a_h][a_a]
                     points = 0
                     
-                    # 1. Correct Outcome (1X2): 5 pts
                     pred_outcome = 1 if p_h > p_a else (-1 if p_h < p_a else 0)
                     actual_outcome = 1 if a_h > a_a else (-1 if a_h < a_a else 0)
                     if pred_outcome == actual_outcome:
                         points += 5
                         
-                    # 2. Correct Home Goals: 2 pts
                     if p_h == a_h:
                         points += 2
                         
-                    # 3. Correct Away Goals: 2 pts
                     if p_a == a_a:
                         points += 2
                         
-                    # 4. Correct Goal Difference: 1 pt
                     if p_h - p_a == a_h - a_a:
                         points += 1
                         
@@ -327,11 +515,126 @@ def optimize_score_prediction(prob_matrix):
                 
     return best_h, best_a, best_expected_points
 
+def fetch_scores():
+    """
+    Fetch recent scores from The Odds API.
+    """
+    if API_KEY == "YOUR_API_KEY" or not API_KEY:
+        print("Using placeholder API key. Skipping scores fetch.")
+        return []
+
+    url = f"https://api.the-odds-api.com/v4/sports/{SPORT}/scores/"
+    params = {
+        "apiKey": API_KEY,
+        "daysFrom": 3
+    }
+    try:
+        response = requests.get(url, params=params, timeout=10)
+        if response.status_code == 200:
+            data = response.json()
+            print(f"Successfully fetched {len(data)} event scores from The Odds API.")
+            return data
+        else:
+            print(f"Failed to fetch scores: Code {response.status_code}")
+            return []
+    except Exception as e:
+        print(f"Error fetching scores: {e}")
+        return []
+
+def update_history_with_scores(history, scores_data):
+    """
+    Update historical predictions with actual scores and calculate actual points earned.
+    """
+    scores_by_id = {}
+    scores_by_teams = {}
+    
+    for event in scores_data:
+        event_id = event.get("id")
+        completed = event.get("completed", False)
+        scores = event.get("scores")
+        
+        if completed and scores and len(scores) == 2:
+            try:
+                home_team = event.get("home_team")
+                away_team = event.get("away_team")
+                
+                home_score = None
+                away_score = None
+                
+                for s in scores:
+                    if s.get("name") == home_team:
+                        home_score = int(s.get("score"))
+                    elif s.get("name") == away_team:
+                        away_score = int(s.get("score"))
+                        
+                if home_score is not None and away_score is not None:
+                    score_info = {"home": home_score, "away": away_score}
+                    if event_id:
+                        scores_by_id[event_id] = score_info
+                    if home_team and away_team:
+                        scores_by_teams[(home_team.lower(), away_team.lower())] = score_info
+            except Exception as e:
+                print(f"Error parsing event score: {e}")
+                
+    updated_count = 0
+    for entry in history:
+        if "actual_home_goals" in entry and "actual_away_goals" in entry:
+            continue
+            
+        match_id = entry.get("match_id")
+        home_team = entry.get("home_team", "")
+        away_team = entry.get("away_team", "")
+        
+        score_info = None
+        if match_id in scores_by_id:
+            score_info = scores_by_id[match_id]
+        elif (home_team.lower(), away_team.lower()) in scores_by_teams:
+            score_info = scores_by_teams[(home_team.lower(), away_team.lower())]
+            
+        if score_info:
+            act_h = score_info["home"]
+            act_a = score_info["away"]
+            pred_h = entry.get("predicted_home_goals")
+            pred_a = entry.get("predicted_away_goals")
+            
+            if pred_h is not None and pred_a is not None:
+                entry["actual_home_goals"] = act_h
+                entry["actual_away_goals"] = act_a
+                
+                pred_outcome = 1 if pred_h > pred_a else (-1 if pred_h < pred_a else 0)
+                actual_outcome = 1 if act_h > act_a else (-1 if act_h < act_a else 0)
+                
+                pts = 0
+                if pred_outcome == actual_outcome:
+                    pts += 5
+                if pred_h == act_h:
+                    pts += 2
+                if pred_a == act_a:
+                    pts += 2
+                if pred_h - pred_a == act_h - act_a:
+                    pts += 1
+                    
+                entry["actual_points"] = pts
+                updated_count += 1
+                print(f"  Updated score for {home_team} vs {away_team}: Actual={act_h}-{act_a}, Predicted={pred_h}-{pred_a}, Points={pts}")
+                
+    return updated_count
+
 def main():
     print("=== Starting World Cup Score Predictor ===")
     raw_matches = fetch_odds()
     predictions = []
     
+    # Load existing results.json to check for already calculated predictions (to freeze/lock)
+    existing_results_dict = {}
+    if os.path.exists(RESULTS_FILE):
+        try:
+            with open(RESULTS_FILE, "r", encoding="utf-8") as f:
+                old_res = json.load(f)
+                existing_results_dict = {r["match_id"]: r for r in old_res if "match_id" in r}
+        except Exception as e:
+            print(f"Failed to load existing results: {e}")
+            
     for match in raw_matches:
         home_team = match.get("home_team")
         away_team = match.get("away_team")
@@ -340,39 +643,61 @@ def main():
         
         print(f"\nProcessing match: {home_team} vs {away_team} ({commence_time})")
         
-        # Parse average odds
+        # Check if kickoff starts within 15 minutes or is in the past
+        import datetime
+        now_utc = datetime.datetime.now(datetime.timezone.utc)
+        commence_time_dt = None
+        if commence_time:
+            try:
+                commence_time_dt = datetime.datetime.fromisoformat(commence_time.replace("Z", "+00:00"))
+            except Exception:
+                pass
+                
+        is_near_or_past_kickoff = False
+        if commence_time_dt:
+            is_near_or_past_kickoff = commence_time_dt <= now_utc + datetime.timedelta(minutes=15)
+            
+        if is_near_or_past_kickoff and match_id in existing_results_dict:
+            print(f"  Kickoff is near or has passed ({commence_time}). Reusing existing locked prediction.")
+            predictions.append(existing_results_dict[match_id])
+            continue
+            
         parsed_odds = parse_match_odds(match)
         if not parsed_odds:
             print(f"Skipping match {home_team} vs {away_team}: No valid odds found.")
             continue
             
-        home_odds, draw_odds, away_odds = parsed_odds
+        home_odds, draw_odds, away_odds, over_odds, under_odds, totals_line = parsed_odds
         print(f"  Average Market Odds: Home={home_odds:.2f}, Draw={draw_odds:.2f}, Away={away_odds:.2f}")
+        if over_odds is not None:
+            print(f"  Average Totals Odds: Over={over_odds:.2f}, Under={under_odds:.2f} (Line={totals_line})")
         
-        # De-vig odds using Shin's method
         de_vigged_probs = de_vig_odds(home_odds, draw_odds, away_odds)
         home_prob, draw_prob, away_prob = de_vigged_probs
         print(f"  De-vigged Probabilities (Shin): Home={home_prob:.3f}, Draw={draw_prob:.3f}, Away={away_prob:.3f}")
         
-        # Calculate goal expectations (lambdas)
-        lambda_h, lambda_a = calculate_lambdas(home_prob, draw_prob, away_prob)
+        over_prob, under_prob = None, None
+        if over_odds is not None and under_odds is not None:
+            over_prob, under_prob = de_vig_totals(over_odds, under_odds)
+            print(f"  De-vigged Totals (Over/Under {totals_line}): Over={over_prob:.3f}, Under={under_prob:.3f}")
+            
+        lambda_h, lambda_a = calculate_lambdas(
+            home_prob, draw_prob, away_prob,
+            over_prob, under_prob, totals_line
+        )
         print(f"  Dixon-Coles Lambdas: lambda_H={lambda_h:.3f}, lambda_A={lambda_a:.3f}")
         
-        # Build joint probability matrix
         prob_matrix = build_probability_grid(lambda_h, lambda_a)
         
-        # Find optimal prediction to maximize Expected Points
         pred_h, pred_a, exp_pts = optimize_score_prediction(prob_matrix)
         print(f"  Optimal Prediction: {pred_h} - {pred_a} (Expected Points: {exp_pts:.3f})")
         
-        # Find most likely score (mode of the joint probability matrix)
         import numpy as np
         max_idx = np.unravel_index(np.argmax(prob_matrix), prob_matrix.shape)
         most_likely_h, most_likely_a = int(max_idx[0]), int(max_idx[1])
         most_likely_prob = float(prob_matrix[most_likely_h][most_likely_a])
         print(f"  Most Likely Score: {most_likely_h} - {most_likely_a} (Probability: {most_likely_prob * 100:.1f}%)")
         
-        # Store prediction
         predictions.append({
             "match_id": match_id,
             "commence_time": commence_time,
@@ -394,7 +719,6 @@ def main():
             "expected_points": round(exp_pts, 3)
         })
         
-    # Archive past predictions from old results.json into history.json
     HISTORY_FILE = os.path.join(SCRIPT_DIR, "history.json")
     old_predictions = []
     if os.path.exists(RESULTS_FILE):
@@ -412,26 +736,19 @@ def main():
         except Exception as e:
             print(f"Failed to load existing history: {e}")
             
-    # Create a set of already archived match IDs
     archived_ids = {m["match_id"] for m in history if "match_id" in m}
-    
-    import datetime
-    now_utc = datetime.datetime.now(datetime.timezone.utc)
     
     archived_count = 0
     for old_match in old_predictions:
         match_id = old_match.get("match_id")
         commence_time_str = old_match.get("commence_time")
         
-        # Don't archive mock matches
         if not match_id or "mock" in str(match_id):
             continue
             
         if commence_time_str:
             try:
-                # Format is ISO e.g. 2026-06-15T18:00:00Z
                 commence_time = datetime.datetime.fromisoformat(commence_time_str.replace("Z", "+00:00"))
-                # If match kickoff has passed, archive it
                 if commence_time <= now_utc:
                     if match_id not in archived_ids:
                         history.append(old_match)
@@ -440,28 +757,31 @@ def main():
             except Exception as e:
                 print(f"Error parsing commence_time for archiving: {e}")
                 
-    if archived_count > 0:
-        try:
-            # Sort history chronologically by kickoff time
-            history.sort(key=lambda x: x.get("commence_time", ""))
-            with open(HISTORY_FILE, "w", encoding="utf-8") as f:
-                json.dump(history, f, indent=4)
+    # Fetch recent scores and update history
+    print("\nFetching scores to update completed matches...")
+    scores_data = fetch_scores()
+    if scores_data:
+        updated_scores_count = update_history_with_scores(history, scores_data)
+        print(f"Updated actual scores/points for {updated_scores_count} matches in history.")
+        
+    try:
+        history.sort(key=lambda x: x.get("commence_time", ""))
+        with open(HISTORY_FILE, "w", encoding="utf-8") as f:
+            json.dump(history, f, indent=4)
+        if archived_count > 0:
             print(f"Archived {archived_count} new past predictions to '{HISTORY_FILE}'.")
-        except Exception as e:
-            print(f"Failed to save history: {e}")
-
-    # Save predictions to results.json
+    except Exception as e:
+        print(f"Failed to save history: {e}")
+ 
     try:
         with open(RESULTS_FILE, "w", encoding="utf-8") as f:
             json.dump(predictions, f, indent=4)
         print(f"\nSuccessfully saved predictions for {len(predictions)} matches to '{RESULTS_FILE}'.")
     except Exception as e:
         print(f"Failed to save predictions to JSON file: {e}")
-
-    # Save execution timestamp to metadata.json
+ 
     try:
         metadata_file = os.path.join(SCRIPT_DIR, "metadata.json")
-        import datetime
         metadata = {
             "last_updated": datetime.datetime.now(datetime.timezone.utc).isoformat()
         }

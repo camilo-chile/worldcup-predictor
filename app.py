@@ -265,19 +265,22 @@ else:
     if history_data:
         df_hist = pd.DataFrame(history_data)
         historical_exp_pts = int(round(df_hist["expected_points"].sum()))
+        actual_points_sum = int(df_hist["actual_points"].dropna().sum()) if "actual_points" in df_hist.columns else 0
         total_exp_pts = int(round(df["expected_points"].sum() + df_hist["expected_points"].sum()))
         total_all_matches = len(df) + len(df_hist)
         avg_exp_pts = (df["expected_points"].sum() + df_hist["expected_points"].sum()) / total_all_matches if total_all_matches > 0 else 0.0
     else:
         historical_exp_pts = 0
+        actual_points_sum = 0
         total_exp_pts = int(round(df["expected_points"].sum()))
         avg_exp_pts = df["expected_points"].mean()
         
-    col1, col2, col3, col4 = st.columns(4)
+    col1, col2, col3, col4, col5 = st.columns(5)
     col1.metric("Remaining Matches", f"{total_remaining_matches}")
-    col2.metric("Expected Points to Date", f"{historical_exp_pts}", help="Sum of expected points across all past matches")
-    col3.metric("Total Expected Points", f"{total_exp_pts}", help="Sum of expected points across all past and remaining matches")
-    col4.metric("Avg Expected Points per Match", f"{avg_exp_pts:.1f} pts", help="Average expected points per match across all past and remaining matches")
+    col2.metric("Actual Points Earned", f"{actual_points_sum}", help="Sum of actual points earned across all past matches")
+    col3.metric("Expected Points to Date", f"{historical_exp_pts}", help="Sum of expected points across all past matches")
+    col4.metric("Total Expected Points", f"{total_exp_pts}", help="Sum of expected points across all past and remaining matches")
+    col5.metric("Avg Expected Points / Match", f"{avg_exp_pts:.1f} pts", help="Average expected points per match across all past and remaining matches")
     
     st.markdown("### 📋 Active Predictions")
     
@@ -329,15 +332,42 @@ else:
         hist_presentation["Away Team"] = hist_df["away_team"]
         hist_presentation["Pred Score (Optimized)"] = hist_df.apply(lambda r: f"{r['predicted_home_goals']} - {r['predicted_away_goals']}", axis=1)
         
+        if "actual_home_goals" in hist_df.columns and "actual_away_goals" in hist_df.columns:
+            hist_presentation["Actual Score"] = hist_df.apply(
+                lambda r: f"{int(r['actual_home_goals'])} - {int(r['actual_away_goals'])}" 
+                if pd.notna(r['actual_home_goals']) and pd.notna(r['actual_away_goals']) 
+                else "Pending", axis=1
+            )
+        else:
+            hist_presentation["Actual Score"] = "Pending"
+            
+        if "actual_points" in hist_df.columns:
+            hist_presentation["Points Earned"] = hist_df.apply(
+                lambda r: f"{int(r['actual_points'])} pts" 
+                if pd.notna(r['actual_points']) 
+                else "N/A", axis=1
+            )
+        else:
+            hist_presentation["Points Earned"] = "N/A"
+            
+        hist_presentation["E[Points]"] = hist_df["expected_points"].round(0).astype(int).astype(str) + " pts"
+        
         if "most_likely_home_goals" in hist_df.columns:
             hist_presentation["Most Likely Score"] = hist_df.apply(lambda r: f"{r['most_likely_home_goals']} - {r['most_likely_away_goals']} ({round(r['most_likely_prob']*100, 1)}%)", axis=1)
         else:
             hist_presentation["Most Likely Score"] = "N/A"
             
-        hist_presentation["E[Points]"] = hist_df["expected_points"].round(0).astype(int).astype(str) + " pts"
         hist_presentation["Home Prob (de-vig)"] = (hist_df["de_vigged_home_prob"] * 100).round(1).astype(str) + "%"
         hist_presentation["Draw Prob (de-vig)"] = (hist_df["de_vigged_draw_prob"] * 100).round(1).astype(str) + "%"
         hist_presentation["Away Prob (de-vig)"] = (hist_df["de_vigged_away_prob"] * 100).round(1).astype(str) + "%"
+        
+        # Reorder columns for presentation
+        cols_order = [
+            "Kickoff (EST)", "Home Team", "Away Team", "Pred Score (Optimized)", 
+            "Actual Score", "Points Earned", "E[Points]", "Most Likely Score", 
+            "Home Prob (de-vig)", "Draw Prob (de-vig)", "Away Prob (de-vig)"
+        ]
+        hist_presentation = hist_presentation[cols_order]
         
         st.dataframe(
             hist_presentation,
@@ -347,24 +377,29 @@ else:
 
 st.markdown("<br>", unsafe_allow_html=True)
 
+# ==========================================
 # Expander: Structured LaTeX Math Documentation & Methodology
 with st.expander("📘 Model Documentation & Mathematical Methodology", expanded=False):
     st.markdown("""
     ### Model Methodology Overview
-    This project implements a highly sophisticated, premium-grade predictive system to forecast scorelines for the remaining matches of the FIFA World Cup 2026. The model utilizes real-time market consensus data, mathematical bookmaker margin elimination (De-Vigging), tactical goal expectancy modeling (Dixon-Coles), and a Bayesian decision-theoretic optimizer to maximize tournament bracket points.
+    This project implements a highly sophisticated, premium-grade predictive system to forecast scorelines for the remaining matches of the FIFA World Cup 2026. The model utilizes real-time market consensus data from both the head-to-head (1X2) and Over/Under totals markets, mathematical bookmaker margin elimination (De-Vigging), tactical goal expectancy modeling (Dixon-Coles), and a Bayesian decision-theoretic optimizer to maximize tournament bracket points.
     
     The prediction pipeline consists of six key statistical stages:
     """)
     
     st.markdown("#### 1. Market Odds Extraction")
-    st.write("The system fetches decimal head-to-head (1X2) odds from **The Odds API**. Financial betting markets serve as highly efficient aggregators of real-time variables (team form, injury updates, climate, and tactical shifts).")
+    st.write("The system fetches decimal head-to-head (1X2) odds and Over/Under totals (preferring the 2.5 line) from **The Odds API**. Financial betting markets serve as highly efficient aggregators of real-time variables (team form, injury updates, climate, and tactical shifts).")
     
-    st.markdown("#### 2. Market Margin Removal (De-Vigging) via Shin's Method")
-    st.write("Bookmakers price outcomes with a profit commission margin (*overround*), meaning the implied probabilities sum to $> 1.0$. Rather than using simple multiplicative normalization, this model employs **Shin's Method (1993)**, which solves for the proportion of informed trading $z$ and the true probabilities $p_{Home}$, $p_{Draw}$, and $p_{Away}$ such that their sum equals exactly $1.0$:")
+    st.markdown("#### 2. Market Margin Removal (De-Vigging)")
+    st.write("Bookmakers price outcomes with a profit commission margin (*overround*), meaning the implied probabilities sum to $> 1.0$. Rather than using simple multiplicative normalization, this model employs **Shin's Method (1993)** for the 3-way H2H market, which solves for the proportion of informed trading $z$ and the true probabilities $p_{Home}$, $p_{Draw}$, and $p_{Away}$ such that their sum equals exactly $1.0$:")
     st.latex(r"\pi_i = (1-z)p_i + z\sqrt{p_i}")
+    st.write("For the 2-way Over/Under totals market, standard multiplicative de-vigging is applied to isolate the true Over and Under probabilities.")
     
     st.markdown("#### 3. Goal Expectancy Parameter Inversion")
-    st.write("Using the clean probabilities, the system solves for the underlying goal expectancy parameters—$\\lambda_H$ (Home Expected Goals) and $\\lambda_A$ (Away Expected Goals). This step translates win/draw/loss probabilities into raw offensive and defensive performance intensities.")
+    st.write("To estimate the home goal expectancy $\\lambda_H$ and away goal expectancy $\\lambda_A$, the model uses a combined optimization approach:")
+    st.write("1. **Total Expected Goals ($\\lambda_{Total}$)**: The system solves for the total goal parameter $\\lambda_{Total}$ using a binary search against the de-vigged Under probability on the Poisson CDF at the specified line $L$:")
+    st.latex(r"P(G < L) = F(\lfloor L \rfloor; \lambda_{Total}) = \sum_{k=0}^{\lfloor L \rfloor} \frac{\lambda_{Total}^k e^{-\lambda_{Total}}}{k!}")
+    st.write("2. **Distribution Ratio ($r$)**: We define $\\lambda_H = r \\lambda_{Total}$ and $\\lambda_A = (1-r) \\lambda_{Total}$, where the ratio $r \\in (0, 1)$ represents the relative offensive strength. The system executes a coarse-to-fine search over $r$ to minimize the sum of squared errors between the resulting Dixon-Coles match probabilities and the de-vigged H2H market probabilities. If totals odds are not available, the model falls back to solving $\\lambda_H$ and $\\lambda_A$ directly from the H2H probabilities.")
     
     st.markdown("#### 4. Base Independent Poisson Distribution")
     st.write("As a baseline, the number of goals scored by the Home team ($X$) and Away team ($Y$) are modeled as independent Poisson random variables:")
@@ -386,8 +421,8 @@ with st.expander("📘 Model Documentation & Mathematical Methodology", expanded
     *   **Correct Goal Difference**: **1 point**
     """)
     st.write("The expected points $\\mathbb{E}[\\text{Points}]$ for any score prediction $P_{pred} = (p_h, p_a)$ given joint probability matrix $P_{DC}$ is:")
-    st.latex(r"\mathbb{E}[\text{Points}(p_h, p_a)] = \sum_{a_h=0}^{5} \sum_{a_a=0}^{5} P_{DC}(a_h, a_a) \times S\Big((p_h, p_a), (a_h, a_a)\Big)")
-    st.write(r"The system executes a discrete grid search over all $(p_h, p_a) \in \{0, 1, 2, 3, 4, 5\}^2$ and selects the prediction that **maximizes this expected value**.")
+    st.latex(r"\mathbb{E}[\text{Points}(p_h, p_a)] = \sum_{a_h=0}^{8} \sum_{a_a=0}^{8} P_{DC}(a_h, a_a) \times S\Big((p_h, p_a), (a_h, a_a)\Big)")
+    st.write(r"The system executes a discrete grid search over all $(p_h, p_a) \in \{0, 1, 2, 3, 4, 5, 6, 7, 8\}^2$ and selects the prediction that **maximizes this expected value**.")
 
 # Footer credits
 st.markdown(

@@ -37,17 +37,21 @@ graph TD
 ```
 
 ### 1. Market Odds Extraction
-The system fetches decimal head-to-head (1X2) odds from **The Odds API**. Financial betting markets serve as highly efficient aggregators of real-time variables (team form, injury updates, climate, and tactical shifts).
+The system fetches decimal head-to-head (1X2) odds and Over/Under totals (preferring the standard 2.5 line) from **The Odds API**. Financial betting markets serve as highly efficient aggregators of real-time variables (team form, injury updates, climate, and tactical shifts).
 
-### 2. Market Margin Removal (De-Vigging) via Shin's Method
-Bookmakers price outcomes with a profit commission margin (*overround*), meaning the implied probabilities sum to $> 1.0$ (typically $1.05 - 1.10$). Rather than using simple multiplicative normalization (which incorrectly assumes the margin is added proportionally across all outcomes), this model employs **Shin's Method (1993)**.
+### 2. Market Margin Removal (De-Vigging)
+Bookmakers price outcomes with a profit commission margin (*overround*), meaning the implied probabilities sum to $> 1.0$ (typically $1.05 - 1.10$). Rather than using simple multiplicative normalization (which incorrectly assumes the margin is added proportionally across all outcomes), this model employs **Shin's Method (1993)** for the 3-way H2H market.
 * **Core Hypothesis**: The betting market consists of a fraction $z$ of "informed traders" (who possess perfect information about the true outcome) and a fraction $1-z$ of "uninformed traders" (noise bettors).
 * **Formula**: To avoid arbitrage opportunities, the bookmaker sets the implied probability $\pi_i$ for outcome $i$ to satisfy:
   $$\pi_i = (1-z)p_i + z\sqrt{p_i}$$
-  An optimization solver (via the `penaltyblog` library) solves for $z$ (the proportion of informed trading) and the **true probabilities** $p_{Home}$, $p_{Draw}$, and $p_{Away}$ such that their sum equals exactly $1.0$.
+  An optimization solver solves for $z$ (the proportion of informed trading) and the **true probabilities** $p_{Home}$, $p_{Draw}$, and $p_{Away}$ such that their sum equals exactly $1.0$.
+* For the 2-way Over/Under totals market, standard multiplicative de-vigging is applied to isolate the true Over and Under probabilities.
 
 ### 3. Goal Expectancy Parameter Inversion ($\lambda_H$, $\lambda_A$)
-Using the clean probabilities $p_{Home}$, $p_{Draw}$, and $p_{Away}$, the system solves for the underlying goal expectancy parameters—$\lambda_H$ (Home Expected Goals) and $\lambda_A$ (Away Expected Goals). This step translates win/draw/loss probabilities into raw offensive and defensive performance intensities.
+To estimate the home goal expectancy $\lambda_H$ and away goal expectancy $\lambda_A$, the model uses a combined optimization approach:
+1. **Total Expected Goals ($\lambda_{Total}$)**: The system solves for the total goal parameter $\lambda_{Total}$ using a binary search against the de-vigged Under probability on the Poisson CDF at the specified line $L$:
+   $$P(G < L) = F(\lfloor L \rfloor; \lambda_{Total}) = \sum_{k=0}^{\lfloor L \rfloor} \frac{\lambda_{Total}^k e^{-\lambda_{Total}}}{k!}$$
+2. **Distribution Ratio ($r$)**: We define $\lambda_H = r \lambda_{Total}$ and $\lambda_A = (1-r) \lambda_{Total}$, where the ratio $r \in (0, 1)$ represents the relative offensive strength. The system executes a coarse-to-fine search over $r$ to minimize the sum of squared errors between the resulting Dixon-Coles match probabilities and the de-vigged H2H market probabilities. If totals odds are not available, the model falls back to solving $\lambda_H$ and $\lambda_A$ directly from the H2H probabilities.
 
 ### 4. Base Independent Poisson Distribution
 As a baseline, the number of goals scored by the Home team ($X$) and Away team ($Y$) are modeled as independent Poisson random variables:
@@ -67,7 +71,7 @@ $$\tau(x,y) = \begin{cases}
 1 - \rho & \text{if } (x,y) = (1,1) \\
 1 & \text{otherwise}
 \end{cases}$$
-This step yields a fully calibrated, normalized $6 \times 6$ probability matrix representing the joint likelihoods of scorelines up to 5 goals.
+This step yields a fully calibrated, normalized $9 \times 9$ probability matrix representing the joint likelihoods of scorelines up to 8 goals.
 
 ### 6. Bayesian Expected Points Grid Search
 Predicting the single most likely scoreline (the statistical mode of the matrix) is mathematically suboptimal if you want to win a tournament. Your prediction strategy must align with the point structure of your competition:
@@ -78,8 +82,8 @@ Predicting the single most likely scoreline (the statistical mode of the matrix)
 
 Let $P_{pred} = (p_h, p_a)$ be your score prediction and $A = (a_h, a_a)$ be the actual scoreline. The points awarded for your prediction given the actual result is $S(P_{pred}, A)$.
 The expected points $\mathbb{E}[\text{Points}]$ for a prediction $(p_h, p_a)$ is calculated as:
-$$\mathbb{E}[\text{Points}(p_h, p_a)] = \sum_{a_h=0}^{5} \sum_{a_a=0}^{5} P_{DC}(a_h, a_a) \times S\Big((p_h, p_a), (a_h, a_a)\Big)$$
-The system executes a discrete grid search over all $(p_h, p_a) \in \{0, 1, 2, 3, 4, 5\}^2$ and selects the prediction that **maximizes this expected value**.
+$$\mathbb{E}[\text{Points}(p_h, p_a)] = \sum_{a_h=0}^{8} \sum_{a_a=0}^{8} P_{DC}(a_h, a_a) \times S\Big((p_h, p_a), (a_h, a_a)\Big)$$
+The system executes a discrete grid search over all $(p_h, p_a) \in \{0, 1, 2, 3, 4, 5, 6, 7, 8\}^2$ and selects the prediction that **maximizes this expected value**.
 
 ---
 

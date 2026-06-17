@@ -17,7 +17,10 @@
         "most_likely_home_goals": 2,
         "most_likely_away_goals": 0,
         "most_likely_prob": 0.15,
-        "expected_points": 4.5
+        "expected_points": 4.5,
+        "actual_home_goals": 2,
+        "actual_away_goals": 0,
+        "actual_points": 10
     },
     {
         "match_id": "384cbb5d76b535896a24fe65f93cfac8",
@@ -37,7 +40,10 @@
         "expected_points": 3.389,
         "most_likely_home_goals": 1,
         "most_likely_away_goals": 1,
-        "most_likely_prob": 0.1479
+        "most_likely_prob": 0.1479,
+        "actual_home_goals": 2,
+        "actual_away_goals": 1,
+        "actual_points": 6
     },
     {
         "match_id": "d1f4f946c70a0b4e81f5d43e9d32361c",
@@ -57,7 +63,10 @@
         "expected_points": 4.193,
         "most_likely_home_goals": 1,
         "most_likely_away_goals": 1,
-        "most_likely_prob": 0.1311
+        "most_likely_prob": 0.1311,
+        "actual_home_goals": 1,
+        "actual_away_goals": 1,
+        "actual_points": 2
     },
     {
         "match_id": "c12986f447a515fbe641addd786dbb24",
@@ -77,7 +86,10 @@
         "expected_points": 3.906,
         "most_likely_home_goals": 1,
         "most_likely_away_goals": 1,
-        "most_likely_prob": 0.1415
+        "most_likely_prob": 0.1415,
+        "actual_home_goals": 4,
+        "actual_away_goals": 1,
+        "actual_points": 5
     },
     {
         "match_id": "26634922d3f78c146440816023e40de8",
@@ -97,7 +109,10 @@
         "most_likely_home_goals": 0,
         "most_likely_away_goals": 3,
         "most_likely_prob": 0.1216,
-        "expected_points": 5.662
+        "expected_points": 5.662,
+        "actual_home_goals": 1,
+        "actual_away_goals": 1,
+        "actual_points": 0
     },
     {
         "match_id": "f6c8748a16516e0998f95de14235432a",
@@ -117,7 +132,10 @@
         "most_likely_home_goals": 1,
         "most_likely_away_goals": 1,
         "most_likely_prob": 0.1225,
-        "expected_points": 4.411
+        "expected_points": 4.411,
+        "actual_home_goals": 1,
+        "actual_away_goals": 1,
+        "actual_points": 2
     },
     {
         "match_id": "5ae41a06735c926eeb7f74006933adce",
@@ -137,7 +155,10 @@
         "most_likely_home_goals": 1,
         "most_likely_away_goals": 2,
         "most_likely_prob": 0.1005,
-        "expected_points": 4.596
+        "expected_points": 4.596,
+        "actual_home_goals": 0,
+        "actual_away_goals": 1,
+        "actual_points": 6
     },
     {
         "match_id": "564084f52cc9f1abcc18187c168a7cdc",
@@ -157,7 +178,10 @@
         "most_likely_home_goals": 1,
         "most_likely_away_goals": 1,
         "most_likely_prob": 0.1239,
-        "expected_points": 4.333
+        "expected_points": 4.333,
+        "actual_home_goals": 2,
+        "actual_away_goals": 0,
+        "actual_points": 0
     },
     {
         "match_id": "d79edbd6aaeb578d33e313446b18d333",
@@ -177,7 +201,10 @@
         "most_likely_home_goals": 4,
         "most_likely_away_goals": 0,
         "most_likely_prob": 0.1343,
-        "expected_points": 6.306
+        "expected_points": 6.306,
+        "actual_home_goals": 7,
+        "actual_away_goals": 1,
+        "actual_points": 5
     },
     {
         "match_id": "32ec06abda2398ac41501c86eb9aa376",
@@ -197,7 +224,10 @@
         "most_likely_home_goals": 1,
         "most_likely_away_goals": 1,
         "most_likely_prob": 0.1342,
-        "expected_points": 3.748
+        "expected_points": 3.748,
+        "actual_home_goals": 2,
+        "actual_away_goals": 2,
+        "actual_points": 0
     },
     {
         "match_id": "05752bb341e197001387b64f3a06b9b2",
@@ -217,7 +247,10 @@
         "most_likely_home_goals": 1,
         "most_likely_away_goals": 1,
         "most_likely_prob": 0.1511,
-        "expected_points": 3.61
+        "expected_points": 3.61,
+        "actual_home_goals": 1,
+        "actual_away_goals": 0,
+        "actual_points": 0
     },
     {
         "match_id": "b55f9569de3f4d731bc5537ff5ff43e4",
@@ -237,7 +270,10 @@
         "most_likely_home_goals": 1,
         "most_likely_away_goals": 1,
         "most_likely_prob": 0.1324,
-        "expected_points": 4.17
+        "expected_points": 4.17,
+        "actual_home_goals": 5,
+        "actual_away_goals": 1,
+        "actual_points": 5
     },
     {
         "match_id": "c54f00b11925751d2b62988775c6c239",
@@ -257,7 +293,10 @@
         "most_likely_home_goals": 4,
         "most_likely_away_goals": 0,
         "most_likely_prob": 0.1229,
-        "expected_points": 6.079
+        "expected_points": 6.079,
+        "actual_home_goals": 0,
+        "actual_away_goals": 0,
+        "actual_points": 2
     },
     {
         "match_id": "fbfb95c62003fd6d828b309f96ee1f9b",
@@ -277,7 +316,10 @@
         "most_likely_home_goals": 2,
         "most_likely_away_goals": 0,
         "most_likely_prob": 0.1118,
-        "expected_points": 4.648
+        "expected_points": 4.648,
+        "actual_home_goals": 1,
+        "actual_away_goals": 1,
+        "actual_points": 0
     },
     {
         "match_id": "64b91c5f2db61c7358a4f05459e83c52",
@@ -297,7 +339,10 @@
         "most_likely_home_goals": 0,
         "most_likely_away_goals": 2,
         "most_likely_prob": 0.1342,
-        "expected_points": 4.949
+        "expected_points": 4.949,
+        "actual_home_goals": 1,
+        "actual_away_goals": 1,
+        "actual_points": 0
     },
     {
         "match_id": "ec51b9c44ad5e34552f3ab53f7262813",
@@ -317,7 +362,10 @@
         "most_likely_home_goals": 1,
         "most_likely_away_goals": 1,
         "most_likely_prob": 0.1324,
-        "expected_points": 4.228
+        "expected_points": 4.228,
+        "actual_home_goals": 2,
+        "actual_away_goals": 2,
+        "actual_points": 0
     },
     {
         "match_id": "73a4fcd14cc9766b9b9bfd50b8ca153a",
@@ -337,7 +385,10 @@
         "most_likely_home_goals": 2,
         "most_likely_away_goals": 0,
         "most_likely_prob": 0.1094,
-        "expected_points": 4.727
+        "expected_points": 4.727,
+        "actual_home_goals": 3,
+        "actual_away_goals": 1,
+        "actual_points": 6
     },
     {
         "match_id": "4d4f2b9b78182b557d4fbf8dcf4f4af2",
@@ -357,6 +408,29 @@
         "most_likely_home_goals": 0,
         "most_likely_away_goals": 2,
         "most_likely_prob": 0.115,
-        "expected_points": 5.507
+        "expected_points": 5.507,
+        "actual_home_goals": 1,
+        "actual_away_goals": 4,
+        "actual_points": 5
+    },
+    {
+        "match_id": "f31b2ee9e1cc6f7e641467f8237eaa21",
+        "commence_time": "2026-06-17T01:00:00Z",
+        "home_team": "Argentina",
+        "away_team": "Algeria",
+        "home_odds": 1.51,
+        "draw_odds": 4.1,
+        "away_odds": 7.07,
+        "de_vigged_home_prob": 0.6428,
+        "de_vigged_draw_prob": 0.229,
+        "de_vigged_away_prob": 0.1281,
+        "lambda_h": 2.0095,
+        "lambda_a": 0.8037,
+        "predicted_home_goals": 2,
+        "predicted_away_goals": 0,
+        "most_likely_home_goals": 2,
+        "most_likely_away_goals": 0,
+        "most_likely_prob": 0.1247,
+        "expected_points": 4.755
     }
 ]

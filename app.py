@@ -256,15 +256,25 @@ else:
     # Convert data list to DataFrame
     df = pd.DataFrame(data)
     
-    # Calculate Summary Metrics
-    total_matches = len(df)
-    total_exp_pts = int(round(df["expected_points"].sum()))
-    avg_exp_pts = df["expected_points"].mean()
+    # Load history data to include in summary metrics if available
+    history_data, _ = load_history(HISTORY_URL)
     
+    # Calculate Summary Metrics
+    total_remaining_matches = len(df)
+    
+    if history_data:
+        df_hist = pd.DataFrame(history_data)
+        total_exp_pts = int(round(df["expected_points"].sum() + df_hist["expected_points"].sum()))
+        total_all_matches = len(df) + len(df_hist)
+        avg_exp_pts = (df["expected_points"].sum() + df_hist["expected_points"].sum()) / total_all_matches if total_all_matches > 0 else 0.0
+    else:
+        total_exp_pts = int(round(df["expected_points"].sum()))
+        avg_exp_pts = df["expected_points"].mean()
+        
     col1, col2, col3 = st.columns(3)
-    col1.metric("Remaining Matches", f"{total_matches}")
-    col2.metric("Total Expected Points", f"{total_exp_pts}", help="Sum of expected points across all remaining matches")
-    col3.metric("Avg Expected Points per Match", f"{avg_exp_pts:.1f} pts", help="Average expected points per match")
+    col1.metric("Remaining Matches", f"{total_remaining_matches}")
+    col2.metric("Total Expected Points", f"{total_exp_pts}", help="Sum of expected points across all past and remaining matches")
+    col3.metric("Avg Expected Points per Match", f"{avg_exp_pts:.1f} pts", help="Average expected points per match across all past and remaining matches")
     
     st.markdown("### 📋 Active Predictions")
     

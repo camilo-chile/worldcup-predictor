@@ -458,5 +458,28 @@
         "actual_home_goals": 3,
         "actual_away_goals": 1,
         "actual_points": 6
+    },
+    {
+        "match_id": "6cc871c121a1869b4612d3fb22fa9d55",
+        "commence_time": "2026-06-17T17:00:00Z",
+        "home_team": "Portugal",
+        "away_team": "DR Congo",
+        "home_odds": 1.3,
+        "draw_odds": 5.65,
+        "away_odds": 13.25,
+        "de_vigged_home_prob": 0.7597,
+        "de_vigged_draw_prob": 0.1706,
+        "de_vigged_away_prob": 0.0697,
+        "lambda_h": 2.4372,
+        "lambda_a": 0.6462,
+        "predicted_home_goals": 2,
+        "predicted_away_goals": 0,
+        "most_likely_home_goals": 2,
+        "most_likely_away_goals": 0,
+        "most_likely_prob": 0.1385,
+        "expected_points": 5.526,
+        "actual_home_goals": 1,
+        "actual_away_goals": 1,
+        "actual_points": 0
     }
 ]

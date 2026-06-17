@@ -481,5 +481,28 @@
         "actual_home_goals": 1,
         "actual_away_goals": 1,
         "actual_points": 0
+    },
+    {
+        "match_id": "689096c8cd7e2753b9fec95321943c5d",
+        "commence_time": "2026-06-17T20:00:00Z",
+        "home_team": "England",
+        "away_team": "Croatia",
+        "home_odds": 1.68,
+        "draw_odds": 3.92,
+        "away_odds": 5.77,
+        "de_vigged_home_prob": 0.5859,
+        "de_vigged_draw_prob": 0.2477,
+        "de_vigged_away_prob": 0.1664,
+        "lambda_h": 1.7696,
+        "lambda_a": 0.8274,
+        "predicted_home_goals": 1,
+        "predicted_away_goals": 0,
+        "most_likely_home_goals": 1,
+        "most_likely_away_goals": 1,
+        "most_likely_prob": 0.124,
+        "expected_points": 4.516,
+        "actual_home_goals": 4,
+        "actual_away_goals": 2,
+        "actual_points": 5
     }
 ]

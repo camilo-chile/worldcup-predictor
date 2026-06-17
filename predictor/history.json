@@ -435,5 +435,28 @@
         "actual_home_goals": 3,
         "actual_away_goals": 0,
         "actual_points": 7
+    },
+    {
+        "match_id": "25161cf6cf0cd9be17ae2e7e224a1f45",
+        "commence_time": "2026-06-17T04:00:00Z",
+        "home_team": "Austria",
+        "away_team": "Jordan",
+        "home_odds": 1.4,
+        "draw_odds": 5.05,
+        "away_odds": 9.25,
+        "de_vigged_home_prob": 0.7056,
+        "de_vigged_draw_prob": 0.1919,
+        "de_vigged_away_prob": 0.1025,
+        "lambda_h": 2.1164,
+        "lambda_a": 0.6469,
+        "predicted_home_goals": 2,
+        "predicted_away_goals": 0,
+        "most_likely_home_goals": 2,
+        "most_likely_away_goals": 0,
+        "most_likely_prob": 0.1437,
+        "expected_points": 5.246,
+        "actual_home_goals": 3,
+        "actual_away_goals": 1,
+        "actual_points": 6
     }
 ]

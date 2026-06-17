@@ -34,7 +34,10 @@
         "lambda_a": 1.1444,
         "predicted_home_goals": 1,
         "predicted_away_goals": 0,
-        "expected_points": 3.389
+        "expected_points": 3.389,
+        "most_likely_home_goals": 1,
+        "most_likely_away_goals": 1,
+        "most_likely_prob": 0.1479
     },
     {
         "match_id": "d1f4f946c70a0b4e81f5d43e9d32361c",
@@ -51,7 +54,10 @@
         "lambda_a": 0.9419,
         "predicted_home_goals": 1,
         "predicted_away_goals": 0,
-        "expected_points": 4.193
+        "expected_points": 4.193,
+        "most_likely_home_goals": 1,
+        "most_likely_away_goals": 1,
+        "most_likely_prob": 0.1311
     },
     {
         "match_id": "c12986f447a515fbe641addd786dbb24",
@@ -68,7 +74,10 @@
         "lambda_a": 0.983,
         "predicted_home_goals": 1,
         "predicted_away_goals": 0,
-        "expected_points": 3.906
+        "expected_points": 3.906,
+        "most_likely_home_goals": 1,
+        "most_likely_away_goals": 1,
+        "most_likely_prob": 0.1415
     },
     {
         "match_id": "26634922d3f78c146440816023e40de8",

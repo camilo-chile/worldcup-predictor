@@ -504,5 +504,28 @@
         "actual_home_goals": 4,
         "actual_away_goals": 2,
         "actual_points": 5
+    },
+    {
+        "match_id": "87afdb85c977b451e1c00f5e3e632601",
+        "commence_time": "2026-06-17T23:00:00Z",
+        "home_team": "Ghana",
+        "away_team": "Panama",
+        "home_odds": 2.45,
+        "draw_odds": 3.18,
+        "away_odds": 3.34,
+        "de_vigged_home_prob": 0.4005,
+        "de_vigged_draw_prob": 0.3073,
+        "de_vigged_away_prob": 0.2923,
+        "lambda_h": 1.3179,
+        "lambda_a": 1.0939,
+        "predicted_home_goals": 1,
+        "predicted_away_goals": 0,
+        "most_likely_home_goals": 1,
+        "most_likely_away_goals": 1,
+        "most_likely_prob": 0.1464,
+        "expected_points": 3.553,
+        "actual_home_goals": 1,
+        "actual_away_goals": 0,
+        "actual_points": 10
     }
 ]

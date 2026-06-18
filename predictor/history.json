@@ -550,5 +550,28 @@
         "actual_home_goals": 1,
         "actual_away_goals": 3,
         "actual_points": 6
+    },
+    {
+        "match_id": "66ebb9e3f949caded535d97ce686ca09",
+        "commence_time": "2026-06-18T16:00:00Z",
+        "home_team": "Czech Republic",
+        "away_team": "South Africa",
+        "home_odds": 1.91,
+        "draw_odds": 3.51,
+        "away_odds": 4.67,
+        "de_vigged_home_prob": 0.515,
+        "de_vigged_draw_prob": 0.2777,
+        "de_vigged_away_prob": 0.2073,
+        "lambda_h": 1.63,
+        "lambda_a": 0.9617,
+        "predicted_home_goals": 1,
+        "predicted_away_goals": 0,
+        "most_likely_home_goals": 1,
+        "most_likely_away_goals": 1,
+        "most_likely_prob": 0.133,
+        "expected_points": 4.124,
+        "actual_home_goals": 1,
+        "actual_away_goals": 1,
+        "actual_points": 2
     }
 ]

@@ -573,5 +573,28 @@
         "actual_home_goals": 1,
         "actual_away_goals": 1,
         "actual_points": 2
+    },
+    {
+        "match_id": "289bc2e9f5adad8ae4d9a75a7c5461ad",
+        "commence_time": "2026-06-18T19:00:00Z",
+        "home_team": "Switzerland",
+        "away_team": "Bosnia & Herzegovina",
+        "home_odds": 1.58,
+        "draw_odds": 4.3,
+        "away_odds": 6.45,
+        "de_vigged_home_prob": 0.6246,
+        "de_vigged_draw_prob": 0.2263,
+        "de_vigged_away_prob": 0.1492,
+        "lambda_h": 1.9114,
+        "lambda_a": 0.8044,
+        "predicted_home_goals": 1,
+        "predicted_away_goals": 0,
+        "most_likely_home_goals": 2,
+        "most_likely_away_goals": 0,
+        "most_likely_prob": 0.1221,
+        "expected_points": 4.683,
+        "actual_home_goals": 4,
+        "actual_away_goals": 1,
+        "actual_points": 5
     }
 ]

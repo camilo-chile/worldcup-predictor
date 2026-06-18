@@ -527,5 +527,28 @@
         "actual_home_goals": 1,
         "actual_away_goals": 0,
         "actual_points": 10
+    },
+    {
+        "match_id": "22083e7a8e5362c711bc05c1e1319a1f",
+        "commence_time": "2026-06-18T02:00:00Z",
+        "home_team": "Uzbekistan",
+        "away_team": "Colombia",
+        "home_odds": 10.5,
+        "draw_odds": 5.1,
+        "away_odds": 1.37,
+        "de_vigged_home_prob": 0.0895,
+        "de_vigged_draw_prob": 0.1897,
+        "de_vigged_away_prob": 0.7208,
+        "lambda_h": 0.7251,
+        "lambda_a": 2.3146,
+        "predicted_home_goals": 0,
+        "predicted_away_goals": 2,
+        "most_likely_home_goals": 0,
+        "most_likely_away_goals": 2,
+        "most_likely_prob": 0.1301,
+        "expected_points": 5.254,
+        "actual_home_goals": 1,
+        "actual_away_goals": 3,
+        "actual_points": 6
     }
 ]

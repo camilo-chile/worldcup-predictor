@@ -642,5 +642,28 @@
         "actual_home_goals": 1,
         "actual_away_goals": 0,
         "actual_points": 10
+    },
+    {
+        "match_id": "065b3573e875f8d23803357f73e5b99e",
+        "commence_time": "2026-06-19T19:00:00Z",
+        "home_team": "USA",
+        "away_team": "Australia",
+        "home_odds": 1.65,
+        "draw_odds": 4.35,
+        "away_odds": 5.45,
+        "de_vigged_home_prob": 0.5983,
+        "de_vigged_draw_prob": 0.2239,
+        "de_vigged_away_prob": 0.1778,
+        "lambda_h": 1.7748,
+        "lambda_a": 0.8019,
+        "predicted_home_goals": 1,
+        "predicted_away_goals": 0,
+        "most_likely_home_goals": 1,
+        "most_likely_away_goals": 1,
+        "most_likely_prob": 0.1232,
+        "expected_points": 4.572,
+        "actual_home_goals": 2,
+        "actual_away_goals": 0,
+        "actual_points": 7
     }
 ]

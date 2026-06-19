@@ -596,5 +596,28 @@
         "actual_home_goals": 4,
         "actual_away_goals": 1,
         "actual_points": 5
+    },
+    {
+        "match_id": "fa9502285b257b03e62968d50d9229fc",
+        "commence_time": "2026-06-18T22:00:00Z",
+        "home_team": "Canada",
+        "away_team": "Qatar",
+        "home_odds": 1.29,
+        "draw_odds": 6.0,
+        "away_odds": 12.5,
+        "de_vigged_home_prob": 0.7656,
+        "de_vigged_draw_prob": 0.1603,
+        "de_vigged_away_prob": 0.0742,
+        "lambda_h": 2.6269,
+        "lambda_a": 0.7498,
+        "predicted_home_goals": 2,
+        "predicted_away_goals": 0,
+        "most_likely_home_goals": 2,
+        "most_likely_away_goals": 0,
+        "most_likely_prob": 0.1196,
+        "expected_points": 5.438,
+        "actual_home_goals": 6,
+        "actual_away_goals": 0,
+        "actual_points": 7
     }
 ]

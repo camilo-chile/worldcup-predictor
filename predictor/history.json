@@ -757,5 +757,28 @@
         "actual_home_goals": 5,
         "actual_away_goals": 1,
         "actual_points": 7
+    },
+    {
+        "match_id": "f1ab0f69832972a329243522ceaa7804",
+        "commence_time": "2026-06-20T20:00:00Z",
+        "home_team": "Germany",
+        "away_team": "Ivory Coast",
+        "home_odds": 1.45,
+        "draw_odds": 5.05,
+        "away_odds": 7.4,
+        "de_vigged_home_prob": 0.6801,
+        "de_vigged_draw_prob": 0.1912,
+        "de_vigged_away_prob": 0.1287,
+        "lambda_h": 2.4816,
+        "lambda_a": 1.0335,
+        "predicted_home_goals": 2,
+        "predicted_away_goals": 1,
+        "most_likely_home_goals": 2,
+        "most_likely_away_goals": 1,
+        "most_likely_prob": 0.0954,
+        "expected_points": 4.843,
+        "actual_home_goals": 2,
+        "actual_away_goals": 1,
+        "actual_points": 10
     }
 ]

@@ -730,6 +730,9 @@
         "most_likely_home_goals": 1,
         "most_likely_away_goals": 1,
         "most_likely_prob": 0.1376,
-        "expected_points": 3.863
+        "expected_points": 3.863,
+        "actual_home_goals": 0,
+        "actual_away_goals": 1,
+        "actual_points": 0
     }
 ]

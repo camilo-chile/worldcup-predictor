@@ -849,5 +849,28 @@
         "actual_home_goals": 4,
         "actual_away_goals": 0,
         "actual_points": 7
+    },
+    {
+        "match_id": "5f92f257386ec5bf7c6e2498a21f3a61",
+        "commence_time": "2026-06-21T19:00:00Z",
+        "home_team": "Belgium",
+        "away_team": "Iran",
+        "home_odds": 1.43,
+        "draw_odds": 4.85,
+        "away_odds": 8.75,
+        "de_vigged_home_prob": 0.691,
+        "de_vigged_draw_prob": 0.2002,
+        "de_vigged_away_prob": 0.1088,
+        "lambda_h": 2.2768,
+        "lambda_a": 0.8225,
+        "predicted_home_goals": 2,
+        "predicted_away_goals": 0,
+        "most_likely_home_goals": 2,
+        "most_likely_away_goals": 0,
+        "most_likely_prob": 0.1182,
+        "expected_points": 5.015,
+        "actual_home_goals": 0,
+        "actual_away_goals": 0,
+        "actual_points": 2
     }
 ]

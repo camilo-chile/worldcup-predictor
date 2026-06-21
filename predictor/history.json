@@ -780,5 +780,28 @@
         "actual_home_goals": 2,
         "actual_away_goals": 1,
         "actual_points": 10
+    },
+    {
+        "match_id": "681895f294b670b4c7b14495dfb583bc",
+        "commence_time": "2026-06-21T00:00:00Z",
+        "home_team": "Ecuador",
+        "away_team": "Cura\u00e7ao",
+        "home_odds": 1.18,
+        "draw_odds": 9.0,
+        "away_odds": 16.0,
+        "de_vigged_home_prob": 0.8378,
+        "de_vigged_draw_prob": 0.1052,
+        "de_vigged_away_prob": 0.057,
+        "lambda_h": 3.5702,
+        "lambda_a": 0.9809,
+        "predicted_home_goals": 3,
+        "predicted_away_goals": 1,
+        "most_likely_home_goals": 3,
+        "most_likely_away_goals": 0,
+        "most_likely_prob": 0.0815,
+        "expected_points": 5.543,
+        "actual_home_goals": 0,
+        "actual_away_goals": 0,
+        "actual_points": 0
     }
 ]

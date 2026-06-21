@@ -803,5 +803,28 @@
         "actual_home_goals": 0,
         "actual_away_goals": 0,
         "actual_points": 0
+    },
+    {
+        "match_id": "dfc5202cf1b8ae002cf952cd04f235b9",
+        "commence_time": "2026-06-21T04:00:00Z",
+        "home_team": "Tunisia",
+        "away_team": "Japan",
+        "home_odds": 8.75,
+        "draw_odds": 4.75,
+        "away_odds": 1.42,
+        "de_vigged_home_prob": 0.1063,
+        "de_vigged_draw_prob": 0.2018,
+        "de_vigged_away_prob": 0.692,
+        "lambda_h": 0.5897,
+        "lambda_a": 1.9721,
+        "predicted_home_goals": 0,
+        "predicted_away_goals": 2,
+        "most_likely_home_goals": 0,
+        "most_likely_away_goals": 2,
+        "most_likely_prob": 0.153,
+        "expected_points": 5.231,
+        "actual_home_goals": 0,
+        "actual_away_goals": 4,
+        "actual_points": 7
     }
 ]

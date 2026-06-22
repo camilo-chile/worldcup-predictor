@@ -872,5 +872,28 @@
         "actual_home_goals": 0,
         "actual_away_goals": 0,
         "actual_points": 2
+    },
+    {
+        "match_id": "852a3abe6d46820720febc0fedebff9a",
+        "commence_time": "2026-06-21T22:00:00Z",
+        "home_team": "Uruguay",
+        "away_team": "Cape Verde",
+        "home_odds": 1.4,
+        "draw_odds": 4.75,
+        "away_odds": 10.25,
+        "de_vigged_home_prob": 0.7048,
+        "de_vigged_draw_prob": 0.2038,
+        "de_vigged_away_prob": 0.0915,
+        "lambda_h": 2.1548,
+        "lambda_a": 0.6724,
+        "predicted_home_goals": 2,
+        "predicted_away_goals": 0,
+        "most_likely_home_goals": 2,
+        "most_likely_away_goals": 0,
+        "most_likely_prob": 0.1397,
+        "expected_points": 5.225,
+        "actual_home_goals": 2,
+        "actual_away_goals": 2,
+        "actual_points": 2
     }
 ]

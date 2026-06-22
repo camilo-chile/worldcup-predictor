@@ -941,5 +941,25 @@
         "actual_home_goals": 2,
         "actual_away_goals": 0,
         "actual_points": 10
+    },
+    {
+        "match_id": "7ad7a0ce2ef2618bb59b066da5642f70",
+        "commence_time": "2026-06-22T21:00:00Z",
+        "home_team": "France",
+        "away_team": "Iraq",
+        "home_odds": 1.09,
+        "draw_odds": 13.5,
+        "away_odds": 36.0,
+        "de_vigged_home_prob": 0.9082,
+        "de_vigged_draw_prob": 0.0688,
+        "de_vigged_away_prob": 0.023,
+        "lambda_h": 3.8473,
+        "lambda_a": 0.642,
+        "predicted_home_goals": 3,
+        "predicted_away_goals": 0,
+        "most_likely_home_goals": 3,
+        "most_likely_away_goals": 0,
+        "most_likely_prob": 0.1096,
+        "expected_points": 6.175
     }
 ]

@@ -895,5 +895,28 @@
         "actual_home_goals": 2,
         "actual_away_goals": 2,
         "actual_points": 2
+    },
+    {
+        "match_id": "c1ec9a65f4b4cf74477b368a7d6282de",
+        "commence_time": "2026-06-22T01:00:00Z",
+        "home_team": "New Zealand",
+        "away_team": "Egypt",
+        "home_odds": 5.95,
+        "draw_odds": 3.95,
+        "away_odds": 1.67,
+        "de_vigged_home_prob": 0.1623,
+        "de_vigged_draw_prob": 0.2469,
+        "de_vigged_away_prob": 0.5908,
+        "lambda_h": 0.8028,
+        "lambda_a": 1.7637,
+        "predicted_home_goals": 0,
+        "predicted_away_goals": 1,
+        "most_likely_home_goals": 1,
+        "most_likely_away_goals": 1,
+        "most_likely_prob": 0.1238,
+        "expected_points": 4.56,
+        "actual_home_goals": 1,
+        "actual_away_goals": 3,
+        "actual_points": 5
     }
 ]

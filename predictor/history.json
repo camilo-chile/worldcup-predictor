@@ -918,5 +918,25 @@
         "actual_home_goals": 1,
         "actual_away_goals": 3,
         "actual_points": 5
+    },
+    {
+        "match_id": "be6c63f416c67bca1300a98f5b89c3af",
+        "commence_time": "2026-06-22T17:00:00Z",
+        "home_team": "Argentina",
+        "away_team": "Austria",
+        "home_odds": 1.45,
+        "draw_odds": 4.6,
+        "away_odds": 8.4,
+        "de_vigged_home_prob": 0.6787,
+        "de_vigged_draw_prob": 0.2095,
+        "de_vigged_away_prob": 0.1118,
+        "lambda_h": 1.9633,
+        "lambda_a": 0.6337,
+        "predicted_home_goals": 2,
+        "predicted_away_goals": 0,
+        "most_likely_home_goals": 2,
+        "most_likely_away_goals": 0,
+        "most_likely_prob": 0.1461,
+        "expected_points": 5.114
     }
 ]

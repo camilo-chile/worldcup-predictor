@@ -960,6 +960,32 @@
         "most_likely_home_goals": 3,
         "most_likely_away_goals": 0,
         "most_likely_prob": 0.1096,
-        "expected_points": 6.175
+        "expected_points": 6.175,
+        "actual_home_goals": 3,
+        "actual_away_goals": 0,
+        "actual_points": 10
+    },
+    {
+        "match_id": "3f48473742ca0fd2a85930554720c75e",
+        "commence_time": "2026-06-23T00:00:00Z",
+        "home_team": "Norway",
+        "away_team": "Senegal",
+        "home_odds": 2.39,
+        "draw_odds": 3.5,
+        "away_odds": 3.14,
+        "de_vigged_home_prob": 0.4104,
+        "de_vigged_draw_prob": 0.2785,
+        "de_vigged_away_prob": 0.3111,
+        "lambda_h": 1.4512,
+        "lambda_a": 1.2332,
+        "predicted_home_goals": 1,
+        "predicted_away_goals": 0,
+        "most_likely_home_goals": 1,
+        "most_likely_away_goals": 1,
+        "most_likely_prob": 0.1375,
+        "expected_points": 3.472,
+        "actual_home_goals": 3,
+        "actual_away_goals": 2,
+        "actual_points": 6
     }
 ]

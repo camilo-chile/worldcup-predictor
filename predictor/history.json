@@ -1033,5 +1033,28 @@
         "actual_home_goals": 5,
         "actual_away_goals": 0,
         "actual_points": 7
+    },
+    {
+        "match_id": "2f49dd8deae3079dc4eb2d634d18a99c",
+        "commence_time": "2026-06-23T20:00:00Z",
+        "home_team": "England",
+        "away_team": "Ghana",
+        "home_odds": 1.19,
+        "draw_odds": 8.0,
+        "away_odds": 19.0,
+        "de_vigged_home_prob": 0.8321,
+        "de_vigged_draw_prob": 0.1199,
+        "de_vigged_away_prob": 0.048,
+        "lambda_h": 3.0563,
+        "lambda_a": 0.6944,
+        "predicted_home_goals": 2,
+        "predicted_away_goals": 0,
+        "most_likely_home_goals": 3,
+        "most_likely_away_goals": 0,
+        "most_likely_prob": 0.1138,
+        "expected_points": 5.773,
+        "actual_home_goals": 0,
+        "actual_away_goals": 0,
+        "actual_points": 2
     }
 ]

@@ -1079,5 +1079,28 @@
         "actual_home_goals": 0,
         "actual_away_goals": 1,
         "actual_points": 7
+    },
+    {
+        "match_id": "68bfc965eb267508e04d8e8d75c1a0ae",
+        "commence_time": "2026-06-24T02:00:00Z",
+        "home_team": "Colombia",
+        "away_team": "DR Congo",
+        "home_odds": 1.56,
+        "draw_odds": 4.1,
+        "away_odds": 7.45,
+        "de_vigged_home_prob": 0.6332,
+        "de_vigged_draw_prob": 0.238,
+        "de_vigged_away_prob": 0.1288,
+        "lambda_h": 1.9193,
+        "lambda_a": 0.7656,
+        "predicted_home_goals": 1,
+        "predicted_away_goals": 0,
+        "most_likely_home_goals": 2,
+        "most_likely_away_goals": 0,
+        "most_likely_prob": 0.1271,
+        "expected_points": 4.768,
+        "actual_home_goals": 1,
+        "actual_away_goals": 0,
+        "actual_points": 10
     }
 ]

@@ -1056,5 +1056,28 @@
         "actual_home_goals": 0,
         "actual_away_goals": 0,
         "actual_points": 2
+    },
+    {
+        "match_id": "c1bc8c26480cd42b89a0de5329581314",
+        "commence_time": "2026-06-23T23:00:00Z",
+        "home_team": "Panama",
+        "away_team": "Croatia",
+        "home_odds": 8.0,
+        "draw_odds": 4.65,
+        "away_odds": 1.47,
+        "de_vigged_home_prob": 0.1193,
+        "de_vigged_draw_prob": 0.2089,
+        "de_vigged_away_prob": 0.6718,
+        "lambda_h": 0.8513,
+        "lambda_a": 2.2112,
+        "predicted_home_goals": 0,
+        "predicted_away_goals": 2,
+        "most_likely_home_goals": 0,
+        "most_likely_away_goals": 2,
+        "most_likely_prob": 0.1156,
+        "expected_points": 4.894,
+        "actual_home_goals": 0,
+        "actual_away_goals": 1,
+        "actual_points": 7
     }
 ]

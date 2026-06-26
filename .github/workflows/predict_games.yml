@@ -5,8 +5,8 @@ env:
 
 on:
   schedule:
-    # Run daily at 8:00 AM Eastern Time (12:00 UTC in June)
-    - cron: '0 12 * * *'
+    # Run daily at 6:34 AM Eastern Time (10:34 UTC in June)
+    - cron: '34 10 * * *'
   workflow_dispatch:
     # Allow manual triggering of the workflow from GitHub Actions UI
 

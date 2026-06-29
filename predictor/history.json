@@ -1608,5 +1608,28 @@
         "actual_home_goals": 1,
         "actual_away_goals": 3,
         "actual_points": 7
+    },
+    {
+        "match_id": "def55b09ef3d6854e3c01e74b5c63415",
+        "commence_time": "2026-06-28T19:00:00Z",
+        "home_team": "South Africa",
+        "away_team": "Canada",
+        "home_odds": 5.1,
+        "draw_odds": 3.45,
+        "away_odds": 1.87,
+        "de_vigged_home_prob": 0.1899,
+        "de_vigged_draw_prob": 0.2832,
+        "de_vigged_away_prob": 0.5269,
+        "lambda_h": 0.8644,
+        "lambda_a": 1.5805,
+        "predicted_home_goals": 0,
+        "predicted_away_goals": 1,
+        "most_likely_home_goals": 1,
+        "most_likely_away_goals": 1,
+        "most_likely_prob": 0.1349,
+        "expected_points": 4.262,
+        "actual_home_goals": 0,
+        "actual_away_goals": 1,
+        "actual_points": 10
     }
 ]

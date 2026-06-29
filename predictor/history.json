@@ -1631,5 +1631,28 @@
         "actual_home_goals": 0,
         "actual_away_goals": 1,
         "actual_points": 10
+    },
+    {
+        "match_id": "4f3d72fba877939d36a5315618184093",
+        "commence_time": "2026-06-29T17:00:00Z",
+        "home_team": "Brazil",
+        "away_team": "Japan",
+        "home_odds": 1.77,
+        "draw_odds": 3.72,
+        "away_odds": 5.27,
+        "de_vigged_home_prob": 0.5558,
+        "de_vigged_draw_prob": 0.2614,
+        "de_vigged_away_prob": 0.1828,
+        "lambda_h": 1.7709,
+        "lambda_a": 0.9369,
+        "predicted_home_goals": 1,
+        "predicted_away_goals": 0,
+        "most_likely_home_goals": 1,
+        "most_likely_away_goals": 1,
+        "most_likely_prob": 0.1252,
+        "expected_points": 4.304,
+        "actual_home_goals": 2,
+        "actual_away_goals": 1,
+        "actual_points": 6
     }
 ]

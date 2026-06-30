@@ -1654,5 +1654,28 @@
         "actual_home_goals": 2,
         "actual_away_goals": 1,
         "actual_points": 6
+    },
+    {
+        "match_id": "4930db8e83436874d09e59bd0e29c1a5",
+        "commence_time": "2026-06-29T20:30:00Z",
+        "home_team": "Germany",
+        "away_team": "Paraguay",
+        "home_odds": 1.37,
+        "draw_odds": 5.25,
+        "away_odds": 10.0,
+        "de_vigged_home_prob": 0.7212,
+        "de_vigged_draw_prob": 0.1844,
+        "de_vigged_away_prob": 0.0944,
+        "lambda_h": 2.4136,
+        "lambda_a": 0.797,
+        "predicted_home_goals": 2,
+        "predicted_away_goals": 0,
+        "most_likely_home_goals": 2,
+        "most_likely_away_goals": 0,
+        "most_likely_prob": 0.119,
+        "expected_points": 5.185,
+        "actual_home_goals": 1,
+        "actual_away_goals": 1,
+        "actual_points": 0
     }
 ]

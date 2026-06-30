@@ -1677,5 +1677,28 @@
         "actual_home_goals": 1,
         "actual_away_goals": 1,
         "actual_points": 0
+    },
+    {
+        "match_id": "5a34afe2de99513ba48360b983cfe80c",
+        "commence_time": "2026-06-30T01:00:00Z",
+        "home_team": "Netherlands",
+        "away_team": "Morocco",
+        "home_odds": 2.41,
+        "draw_odds": 3.12,
+        "away_odds": 3.48,
+        "de_vigged_home_prob": 0.4069,
+        "de_vigged_draw_prob": 0.313,
+        "de_vigged_away_prob": 0.2801,
+        "lambda_h": 1.2903,
+        "lambda_a": 1.0316,
+        "predicted_home_goals": 1,
+        "predicted_away_goals": 0,
+        "most_likely_home_goals": 1,
+        "most_likely_away_goals": 1,
+        "most_likely_prob": 0.1483,
+        "expected_points": 3.628,
+        "actual_home_goals": 1,
+        "actual_away_goals": 1,
+        "actual_points": 2
     }
 ]

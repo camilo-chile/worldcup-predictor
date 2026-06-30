@@ -1700,5 +1700,28 @@
         "actual_home_goals": 1,
         "actual_away_goals": 1,
         "actual_points": 2
+    },
+    {
+        "match_id": "ce017bea1a26252278053ce759e2416b",
+        "commence_time": "2026-06-30T17:00:00Z",
+        "home_team": "Ivory Coast",
+        "away_team": "Norway",
+        "home_odds": 3.67,
+        "draw_odds": 3.45,
+        "away_odds": 2.17,
+        "de_vigged_home_prob": 0.2652,
+        "de_vigged_draw_prob": 0.2824,
+        "de_vigged_away_prob": 0.4524,
+        "lambda_h": 1.1456,
+        "lambda_a": 1.5544,
+        "predicted_home_goals": 0,
+        "predicted_away_goals": 1,
+        "most_likely_home_goals": 1,
+        "most_likely_away_goals": 1,
+        "most_likely_prob": 0.1348,
+        "expected_points": 3.723,
+        "actual_home_goals": 1,
+        "actual_away_goals": 2,
+        "actual_points": 6
     }
 ]

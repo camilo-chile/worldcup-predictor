@@ -1838,5 +1838,28 @@
         "actual_home_goals": 2,
         "actual_away_goals": 0,
         "actual_points": 10
+    },
+    {
+        "match_id": "a518ac20df8f5c732b881e213ae0c230",
+        "commence_time": "2026-07-02T19:00:00Z",
+        "home_team": "Spain",
+        "away_team": "Austria",
+        "home_odds": 1.35,
+        "draw_odds": 5.3,
+        "away_odds": 10.5,
+        "de_vigged_home_prob": 0.7301,
+        "de_vigged_draw_prob": 0.1813,
+        "de_vigged_away_prob": 0.0886,
+        "lambda_h": 2.4206,
+        "lambda_a": 0.763,
+        "predicted_home_goals": 2,
+        "predicted_away_goals": 0,
+        "most_likely_home_goals": 2,
+        "most_likely_away_goals": 0,
+        "most_likely_prob": 0.1231,
+        "expected_points": 5.261,
+        "actual_home_goals": 3,
+        "actual_away_goals": 0,
+        "actual_points": 7
     }
 ]

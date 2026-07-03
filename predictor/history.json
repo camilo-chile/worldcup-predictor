@@ -1884,5 +1884,28 @@
         "actual_home_goals": 2,
         "actual_away_goals": 1,
         "actual_points": 6
+    },
+    {
+        "match_id": "c17fe2e46190d7ab6af01504ff240e82",
+        "commence_time": "2026-07-03T03:00:00Z",
+        "home_team": "Switzerland",
+        "away_team": "Algeria",
+        "home_odds": 2.02,
+        "draw_odds": 3.27,
+        "away_odds": 4.53,
+        "de_vigged_home_prob": 0.487,
+        "de_vigged_draw_prob": 0.2988,
+        "de_vigged_away_prob": 0.2142,
+        "lambda_h": 1.4542,
+        "lambda_a": 0.8894,
+        "predicted_home_goals": 1,
+        "predicted_away_goals": 0,
+        "most_likely_home_goals": 1,
+        "most_likely_away_goals": 1,
+        "most_likely_prob": 0.1414,
+        "expected_points": 4.08,
+        "actual_home_goals": 2,
+        "actual_away_goals": 0,
+        "actual_points": 7
     }
 ]

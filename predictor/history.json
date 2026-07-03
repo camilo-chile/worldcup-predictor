@@ -1861,5 +1861,28 @@
         "actual_home_goals": 3,
         "actual_away_goals": 0,
         "actual_points": 7
+    },
+    {
+        "match_id": "852b4baf0be4b9eef2a30596a8d39249",
+        "commence_time": "2026-07-02T23:00:00Z",
+        "home_team": "Portugal",
+        "away_team": "Croatia",
+        "home_odds": 1.72,
+        "draw_odds": 3.66,
+        "away_odds": 5.9,
+        "de_vigged_home_prob": 0.5719,
+        "de_vigged_draw_prob": 0.2656,
+        "de_vigged_away_prob": 0.1625,
+        "lambda_h": 1.867,
+        "lambda_a": 0.949,
+        "predicted_home_goals": 1,
+        "predicted_away_goals": 0,
+        "most_likely_home_goals": 1,
+        "most_likely_away_goals": 1,
+        "most_likely_prob": 0.1197,
+        "expected_points": 4.366,
+        "actual_home_goals": 2,
+        "actual_away_goals": 1,
+        "actual_points": 6
     }
 ]

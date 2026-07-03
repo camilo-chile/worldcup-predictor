@@ -1907,5 +1907,28 @@
         "actual_home_goals": 2,
         "actual_away_goals": 0,
         "actual_points": 7
+    },
+    {
+        "match_id": "fb270a3dac2b682c861bd674a5ff4a04",
+        "commence_time": "2026-07-03T18:00:00Z",
+        "home_team": "Australia",
+        "away_team": "Egypt",
+        "home_odds": 3.77,
+        "draw_odds": 2.95,
+        "away_odds": 2.39,
+        "de_vigged_home_prob": 0.2581,
+        "de_vigged_draw_prob": 0.3314,
+        "de_vigged_away_prob": 0.4104,
+        "lambda_h": 0.8903,
+        "lambda_a": 1.1869,
+        "predicted_home_goals": 0,
+        "predicted_away_goals": 1,
+        "most_likely_home_goals": 1,
+        "most_likely_away_goals": 1,
+        "most_likely_prob": 0.1513,
+        "expected_points": 3.757,
+        "actual_home_goals": 1,
+        "actual_away_goals": 1,
+        "actual_points": 2
     }
 ]

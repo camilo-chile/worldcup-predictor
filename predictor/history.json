@@ -1930,5 +1930,28 @@
         "actual_home_goals": 1,
         "actual_away_goals": 1,
         "actual_points": 2
+    },
+    {
+        "match_id": "3e161b2448ed76d6b0c0f5bda6fd5bf2",
+        "commence_time": "2026-07-03T22:00:00Z",
+        "home_team": "Argentina",
+        "away_team": "Cape Verde",
+        "home_odds": 1.16,
+        "draw_odds": 8.75,
+        "away_odds": 20.0,
+        "de_vigged_home_prob": 0.8499,
+        "de_vigged_draw_prob": 0.1069,
+        "de_vigged_away_prob": 0.0432,
+        "lambda_h": 3.2712,
+        "lambda_a": 0.7219,
+        "predicted_home_goals": 3,
+        "predicted_away_goals": 0,
+        "most_likely_home_goals": 3,
+        "most_likely_away_goals": 0,
+        "most_likely_prob": 0.1096,
+        "expected_points": 5.822,
+        "actual_home_goals": 3,
+        "actual_away_goals": 2,
+        "actual_points": 7
     }
 ]

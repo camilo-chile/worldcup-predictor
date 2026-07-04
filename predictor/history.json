@@ -1953,5 +1953,28 @@
         "actual_home_goals": 3,
         "actual_away_goals": 2,
         "actual_points": 7
+    },
+    {
+        "match_id": "88e032a2b2e5042d26db3f0da1df924a",
+        "commence_time": "2026-07-04T01:30:00Z",
+        "home_team": "Colombia",
+        "away_team": "Ghana",
+        "home_odds": 1.45,
+        "draw_odds": 4.45,
+        "away_odds": 9.0,
+        "de_vigged_home_prob": 0.679,
+        "de_vigged_draw_prob": 0.2169,
+        "de_vigged_away_prob": 0.1041,
+        "lambda_h": 2.0622,
+        "lambda_a": 0.7037,
+        "predicted_home_goals": 2,
+        "predicted_away_goals": 0,
+        "most_likely_home_goals": 2,
+        "most_likely_away_goals": 0,
+        "most_likely_prob": 0.1358,
+        "expected_points": 5.06,
+        "actual_home_goals": 1,
+        "actual_away_goals": 0,
+        "actual_points": 7
     }
 ]

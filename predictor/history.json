@@ -2114,5 +2114,28 @@
         "actual_home_goals": 1,
         "actual_away_goals": 4,
         "actual_points": 0
+    },
+    {
+        "match_id": "190922affd0be754bfefd71548dbf90d",
+        "commence_time": "2026-07-07T16:00:00Z",
+        "home_team": "Argentina",
+        "away_team": "Egypt",
+        "home_odds": 1.36,
+        "draw_odds": 5.0,
+        "away_odds": 12.0,
+        "de_vigged_home_prob": 0.7273,
+        "de_vigged_draw_prob": 0.1944,
+        "de_vigged_away_prob": 0.0783,
+        "lambda_h": 2.0892,
+        "lambda_a": 0.5384,
+        "predicted_home_goals": 2,
+        "predicted_away_goals": 0,
+        "most_likely_home_goals": 2,
+        "most_likely_away_goals": 0,
+        "most_likely_prob": 0.1613,
+        "expected_points": 5.482,
+        "actual_home_goals": 3,
+        "actual_away_goals": 2,
+        "actual_points": 5
     }
 ]

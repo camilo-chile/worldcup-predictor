@@ -2137,5 +2137,28 @@
         "actual_home_goals": 3,
         "actual_away_goals": 2,
         "actual_points": 5
+    },
+    {
+        "match_id": "a6da973c5749ce60adab77d64b3664f4",
+        "commence_time": "2026-07-07T20:00:00Z",
+        "home_team": "Switzerland",
+        "away_team": "Colombia",
+        "home_odds": 3.73,
+        "draw_odds": 2.93,
+        "away_odds": 2.43,
+        "de_vigged_home_prob": 0.2615,
+        "de_vigged_draw_prob": 0.3343,
+        "de_vigged_away_prob": 0.4042,
+        "lambda_h": 0.8878,
+        "lambda_a": 1.1642,
+        "predicted_home_goals": 0,
+        "predicted_away_goals": 1,
+        "most_likely_home_goals": 1,
+        "most_likely_away_goals": 1,
+        "most_likely_prob": 0.1519,
+        "expected_points": 3.732,
+        "actual_home_goals": 0,
+        "actual_away_goals": 0,
+        "actual_points": 2
     }
 ]

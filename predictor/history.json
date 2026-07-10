@@ -2160,5 +2160,28 @@
         "actual_home_goals": 0,
         "actual_away_goals": 0,
         "actual_points": 2
+    },
+    {
+        "match_id": "b6e926d7f026782b9cab2fa02b823d92",
+        "commence_time": "2026-07-09T20:00:00Z",
+        "home_team": "France",
+        "away_team": "Morocco",
+        "home_odds": 1.62,
+        "draw_odds": 3.9,
+        "away_odds": 6.85,
+        "de_vigged_home_prob": 0.6094,
+        "de_vigged_draw_prob": 0.2502,
+        "de_vigged_away_prob": 0.1404,
+        "lambda_h": 1.8056,
+        "lambda_a": 0.761,
+        "predicted_home_goals": 1,
+        "predicted_away_goals": 0,
+        "most_likely_home_goals": 2,
+        "most_likely_away_goals": 0,
+        "most_likely_prob": 0.1266,
+        "expected_points": 4.683,
+        "actual_home_goals": 2,
+        "actual_away_goals": 0,
+        "actual_points": 7
     }
 ]

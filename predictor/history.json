@@ -2183,5 +2183,28 @@
         "actual_home_goals": 2,
         "actual_away_goals": 0,
         "actual_points": 7
+    },
+    {
+        "match_id": "fca257de4583bd4bc592e8b2a8f24ad7",
+        "commence_time": "2026-07-10T19:00:00Z",
+        "home_team": "Spain",
+        "away_team": "Belgium",
+        "home_odds": 1.64,
+        "draw_odds": 4.05,
+        "away_odds": 5.97,
+        "de_vigged_home_prob": 0.6001,
+        "de_vigged_draw_prob": 0.2394,
+        "de_vigged_away_prob": 0.1605,
+        "lambda_h": 1.9678,
+        "lambda_a": 0.9404,
+        "predicted_home_goals": 2,
+        "predicted_away_goals": 1,
+        "most_likely_home_goals": 1,
+        "most_likely_away_goals": 1,
+        "most_likely_prob": 0.1139,
+        "expected_points": 4.476,
+        "actual_home_goals": 2,
+        "actual_away_goals": 1,
+        "actual_points": 10
     }
 ]

@@ -550,7 +550,7 @@ def optimize_score_prediction(prob_matrix):
                     if p_a == a_a:
                         points += 2
                         
-                    if p_h - p_a == a_h - a_a:
+                    if abs(p_h - p_a) == abs(a_h - a_a):
                         points += 1
                         
                     expected_points += prob * points
@@ -624,45 +624,47 @@ def update_history_with_scores(history, scores_data):
                 
     updated_count = 0
     for entry in history:
-        if "actual_home_goals" in entry and "actual_away_goals" in entry:
-            continue
+        # Fetch actual score from API data if not already present
+        if "actual_home_goals" not in entry or "actual_away_goals" not in entry or entry.get("actual_home_goals") is None or entry.get("actual_away_goals") is None:
+            match_id = entry.get("match_id")
+            home_team = entry.get("home_team") or ""
+            away_team = entry.get("away_team") or ""
             
-        match_id = entry.get("match_id")
-        home_team = entry.get("home_team") or ""
-        away_team = entry.get("away_team") or ""
-        
-        score_info = None
-        if match_id in scores_by_id:
-            score_info = scores_by_id[match_id]
-        elif (home_team.lower(), away_team.lower()) in scores_by_teams:
-            score_info = scores_by_teams[(home_team.lower(), away_team.lower())]
-            
-        if score_info:
-            act_h = score_info["home"]
-            act_a = score_info["away"]
-            pred_h = entry.get("predicted_home_goals")
-            pred_a = entry.get("predicted_away_goals")
-            
-            if pred_h is not None and pred_a is not None:
-                entry["actual_home_goals"] = act_h
-                entry["actual_away_goals"] = act_a
+            score_info = None
+            if match_id in scores_by_id:
+                score_info = scores_by_id[match_id]
+            elif (home_team.lower(), away_team.lower()) in scores_by_teams:
+                score_info = scores_by_teams[(home_team.lower(), away_team.lower())]
                 
-                pred_outcome = 1 if pred_h > pred_a else (-1 if pred_h < pred_a else 0)
-                actual_outcome = 1 if act_h > act_a else (-1 if act_h < act_a else 0)
-                
-                pts = 0
-                if pred_outcome == actual_outcome:
-                    pts += 5
-                if pred_h == act_h:
-                    pts += 2
-                if pred_a == act_a:
-                    pts += 2
-                if pred_h - pred_a == act_h - act_a:
-                    pts += 1
-                    
-                entry["actual_points"] = pts
+            if score_info:
+                entry["actual_home_goals"] = score_info["home"]
+                entry["actual_away_goals"] = score_info["away"]
                 updated_count += 1
-                print(f"  Updated score for {home_team} vs {away_team}: Actual={act_h}-{act_a}, Predicted={pred_h}-{pred_a}, Points={pts}")
+
+        # Recalculate actual_points retroactively for all entries with actual scores
+        act_h = entry.get("actual_home_goals")
+        act_a = entry.get("actual_away_goals")
+        pred_h = entry.get("predicted_home_goals")
+        pred_a = entry.get("predicted_away_goals")
+        
+        if act_h is not None and act_a is not None and pred_h is not None and pred_a is not None:
+            pred_outcome = 1 if pred_h > pred_a else (-1 if pred_h < pred_a else 0)
+            actual_outcome = 1 if act_h > act_a else (-1 if act_h < act_a else 0)
+            
+            pts = 0
+            if pred_outcome == actual_outcome:
+                pts += 5
+            if pred_h == act_h:
+                pts += 2
+            if pred_a == act_a:
+                pts += 2
+            if abs(pred_h - pred_a) == abs(act_h - act_a):
+                pts += 1
+                
+            old_pts = entry.get("actual_points")
+            entry["actual_points"] = pts
+            if old_pts != pts:
+                print(f"  Updated points for {entry.get('home_team')} vs {entry.get('away_team')}: Actual={act_h}-{act_a}, Predicted={pred_h}-{pred_a}, Points={old_pts} -> {pts}")
                 
     return updated_count
 
@@ -813,8 +815,8 @@ def main():
     # Fetch recent scores and update history
     print("\nFetching scores to update completed matches...")
     scores_data = fetch_scores()
-    if scores_data:
-        updated_scores_count = update_history_with_scores(history, scores_data)
+    updated_scores_count = update_history_with_scores(history, scores_data)
+    if updated_scores_count > 0:
         print(f"Updated actual scores/points for {updated_scores_count} matches in history.")
         
     try:

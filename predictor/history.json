@@ -250,7 +250,7 @@
         "expected_points": 3.61,
         "actual_home_goals": 1,
         "actual_away_goals": 0,
-        "actual_points": 0
+        "actual_points": 1
     },
     {
         "match_id": "b55f9569de3f4d731bc5537ff5ff43e4",
@@ -733,7 +733,7 @@
         "expected_points": 3.863,
         "actual_home_goals": 0,
         "actual_away_goals": 1,
-        "actual_points": 0
+        "actual_points": 1
     },
     {
         "match_id": "4f0c518545b0096c68326daf25bffc1e",
@@ -1239,7 +1239,7 @@
         "expected_points": 4.347,
         "actual_home_goals": 1,
         "actual_away_goals": 0,
-        "actual_points": 0
+        "actual_points": 1
     },
     {
         "match_id": "a5a0b544a984ab16e564264f3e859b43",
@@ -1285,7 +1285,7 @@
         "expected_points": 4.328,
         "actual_home_goals": 2,
         "actual_away_goals": 1,
-        "actual_points": 0
+        "actual_points": 1
     },
     {
         "match_id": "0ed0233bddc4eafc8507f86a9c17b998",
@@ -1377,7 +1377,7 @@
         "expected_points": 3.799,
         "actual_home_goals": 3,
         "actual_away_goals": 2,
-        "actual_points": 2
+        "actual_points": 3
     },
     {
         "match_id": "e07b1926be5a4d515c7eb108dbcee9c5",
@@ -2044,7 +2044,7 @@
         "expected_points": 4.145,
         "actual_home_goals": 1,
         "actual_away_goals": 2,
-        "actual_points": 0
+        "actual_points": 1
     },
     {
         "match_id": "e61a7b471cadc8e3849158ed59d49cab",

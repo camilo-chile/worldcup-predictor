@@ -418,7 +418,7 @@ with st.expander("📘 Model Documentation & Mathematical Methodology", expanded
     *   **Correct Match Outcome (Winner/Draw) (1X2)**: **5 points**
     *   **Correct Home Goals**: **2 points**
     *   **Correct Away Goals**: **2 points**
-    *   **Correct Goal Difference**: **1 point**
+    *   **Correct Goal Difference (Bi-directional)**: **1 point**
     """)
     st.write("The expected points $\\mathbb{E}[\\text{Points}]$ for any score prediction $P_{pred} = (p_h, p_a)$ given joint probability matrix $P_{DC}$ is:")
     st.latex(r"\mathbb{E}[\text{Points}(p_h, p_a)] = \sum_{a_h=0}^{8} \sum_{a_a=0}^{8} P_{DC}(a_h, a_a) \times S\Big((p_h, p_a), (a_h, a_a)\Big)")

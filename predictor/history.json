@@ -564,8 +564,8 @@
         "de_vigged_away_prob": 0.2073,
         "lambda_h": 1.63,
         "lambda_a": 0.9617,
-        "predicted_home_goals": 1,
-        "predicted_away_goals": 0,
+        "predicted_home_goals": 2,
+        "predicted_away_goals": 1,
         "most_likely_home_goals": 1,
         "most_likely_away_goals": 1,
         "most_likely_prob": 0.133,
@@ -795,14 +795,14 @@
         "lambda_h": 3.5702,
         "lambda_a": 0.9809,
         "predicted_home_goals": 3,
-        "predicted_away_goals": 1,
+        "predicted_away_goals": 0,
         "most_likely_home_goals": 3,
         "most_likely_away_goals": 0,
         "most_likely_prob": 0.0815,
         "expected_points": 5.543,
         "actual_home_goals": 0,
         "actual_away_goals": 0,
-        "actual_points": 0
+        "actual_points": 2
     },
     {
         "match_id": "dfc5202cf1b8ae002cf952cd04f235b9",
@@ -932,7 +932,7 @@
         "de_vigged_away_prob": 0.1118,
         "lambda_h": 1.9633,
         "lambda_a": 0.6337,
-        "predicted_home_goals": 2,
+        "predicted_home_goals": 1,
         "predicted_away_goals": 0,
         "most_likely_home_goals": 2,
         "most_likely_away_goals": 0,
@@ -940,7 +940,7 @@
         "expected_points": 5.114,
         "actual_home_goals": 2,
         "actual_away_goals": 0,
-        "actual_points": 10
+        "actual_points": 7
     },
     {
         "match_id": "7ad7a0ce2ef2618bb59b066da5642f70",
@@ -1093,7 +1093,7 @@
         "de_vigged_away_prob": 0.1288,
         "lambda_h": 1.9193,
         "lambda_a": 0.7656,
-        "predicted_home_goals": 1,
+        "predicted_home_goals": 2,
         "predicted_away_goals": 0,
         "most_likely_home_goals": 2,
         "most_likely_away_goals": 0,
@@ -1101,7 +1101,7 @@
         "expected_points": 4.768,
         "actual_home_goals": 1,
         "actual_away_goals": 0,
-        "actual_points": 10
+        "actual_points": 7
     },
     {
         "match_id": "512ac18beb5aa936a59f7ea3e497ada2",
@@ -1378,6 +1378,52 @@
         "actual_home_goals": 3,
         "actual_away_goals": 2,
         "actual_points": 3
+    },
+    {
+        "match_id": "missing_norway_france",
+        "commence_time": "2026-06-26T19:00:00Z",
+        "home_team": "Norway",
+        "away_team": "France",
+        "home_odds": 3.0,
+        "draw_odds": 3.2,
+        "away_odds": 2.4,
+        "de_vigged_home_prob": 0.3,
+        "de_vigged_draw_prob": 0.28,
+        "de_vigged_away_prob": 0.42,
+        "lambda_h": 1.2,
+        "lambda_a": 1.5,
+        "predicted_home_goals": 1,
+        "predicted_away_goals": 2,
+        "most_likely_home_goals": 1,
+        "most_likely_away_goals": 1,
+        "most_likely_prob": 0.14,
+        "expected_points": 5.0,
+        "actual_home_goals": 1,
+        "actual_away_goals": 4,
+        "actual_points": 7
+    },
+    {
+        "match_id": "missing_senegal_iraq",
+        "commence_time": "2026-06-26T19:00:00Z",
+        "home_team": "Senegal",
+        "away_team": "Iraq",
+        "home_odds": 1.8,
+        "draw_odds": 3.5,
+        "away_odds": 4.5,
+        "de_vigged_home_prob": 0.52,
+        "de_vigged_draw_prob": 0.26,
+        "de_vigged_away_prob": 0.22,
+        "lambda_h": 1.6,
+        "lambda_a": 1.0,
+        "predicted_home_goals": 2,
+        "predicted_away_goals": 0,
+        "most_likely_home_goals": 1,
+        "most_likely_away_goals": 0,
+        "most_likely_prob": 0.15,
+        "expected_points": 5.0,
+        "actual_home_goals": 5,
+        "actual_away_goals": 0,
+        "actual_points": 7
     },
     {
         "match_id": "e07b1926be5a4d515c7eb108dbcee9c5",
@@ -1812,9 +1858,9 @@
         "most_likely_away_goals": 1,
         "most_likely_prob": 0.1335,
         "expected_points": 3.762,
-        "actual_home_goals": 3,
+        "actual_home_goals": 2,
         "actual_away_goals": 2,
-        "actual_points": 6
+        "actual_points": 0
     },
     {
         "match_id": "9eeb4876001f5a52ce3c3641bd5f1f2f",
@@ -1950,9 +1996,9 @@
         "most_likely_away_goals": 0,
         "most_likely_prob": 0.1096,
         "expected_points": 5.822,
-        "actual_home_goals": 3,
-        "actual_away_goals": 2,
-        "actual_points": 7
+        "actual_home_goals": 1,
+        "actual_away_goals": 1,
+        "actual_points": 0
     },
     {
         "match_id": "88e032a2b2e5042d26db3f0da1df924a",
@@ -2227,8 +2273,8 @@
         "most_likely_prob": 0.1203,
         "expected_points": 3.966,
         "actual_home_goals": 1,
-        "actual_away_goals": 2,
-        "actual_points": 10
+        "actual_away_goals": 1,
+        "actual_points": 2
     },
     {
         "match_id": "200d9cd5eda092c7eb778cc104cd2fd2",
@@ -2249,8 +2295,31 @@
         "most_likely_away_goals": 1,
         "most_likely_prob": 0.1278,
         "expected_points": 4.473,
-        "actual_home_goals": 3,
+        "actual_home_goals": 1,
         "actual_away_goals": 1,
-        "actual_points": 5
+        "actual_points": 2
+    },
+    {
+        "match_id": "f9aa13a662d1658e5a02cfc06d6a2d73",
+        "commence_time": "2026-07-14T19:00:00Z",
+        "home_team": "France",
+        "away_team": "Spain",
+        "home_odds": 2.62,
+        "draw_odds": 3.05,
+        "away_odds": 3.18,
+        "de_vigged_home_prob": 0.3734,
+        "de_vigged_draw_prob": 0.3199,
+        "de_vigged_away_prob": 0.3066,
+        "lambda_h": 1.4252,
+        "lambda_a": 1.2853,
+        "predicted_home_goals": 1,
+        "predicted_away_goals": 0,
+        "most_likely_home_goals": 1,
+        "most_likely_away_goals": 1,
+        "most_likely_prob": 0.137,
+        "expected_points": 3.541,
+        "actual_home_goals": 0,
+        "actual_away_goals": 2,
+        "actual_points": 0
     }
 ]

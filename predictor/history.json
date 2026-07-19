@@ -2344,5 +2344,28 @@
         "actual_home_goals": 1,
         "actual_away_goals": 2,
         "actual_points": 3
+    },
+    {
+        "match_id": "7a49e7985534a5ff3428740d0b630fd7",
+        "commence_time": "2026-07-18T21:00:00Z",
+        "home_team": "France",
+        "away_team": "England",
+        "home_odds": 1.77,
+        "draw_odds": 4.13,
+        "away_odds": 4.49,
+        "de_vigged_home_prob": 0.5534,
+        "de_vigged_draw_prob": 0.2329,
+        "de_vigged_away_prob": 0.2137,
+        "lambda_h": 2.0953,
+        "lambda_a": 1.2621,
+        "predicted_home_goals": 2,
+        "predicted_away_goals": 1,
+        "most_likely_home_goals": 1,
+        "most_likely_away_goals": 1,
+        "most_likely_prob": 0.1025,
+        "expected_points": 4.351,
+        "actual_home_goals": 4,
+        "actual_away_goals": 6,
+        "actual_points": 0
     }
 ]

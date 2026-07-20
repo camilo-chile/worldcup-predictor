@@ -2367,5 +2367,28 @@
         "actual_home_goals": 4,
         "actual_away_goals": 6,
         "actual_points": 0
+    },
+    {
+        "match_id": "fb30113e43d113f1ace48b8563ba1ee9",
+        "commence_time": "2026-07-19T19:00:00Z",
+        "home_team": "Spain",
+        "away_team": "Argentina",
+        "home_odds": 2.31,
+        "draw_odds": 3.06,
+        "away_odds": 3.74,
+        "de_vigged_home_prob": 0.4233,
+        "de_vigged_draw_prob": 0.3179,
+        "de_vigged_away_prob": 0.2589,
+        "lambda_h": 1.2797,
+        "lambda_a": 0.9496,
+        "predicted_home_goals": 1,
+        "predicted_away_goals": 0,
+        "most_likely_home_goals": 1,
+        "most_likely_away_goals": 1,
+        "most_likely_prob": 0.1489,
+        "expected_points": 3.928,
+        "actual_home_goals": 1,
+        "actual_away_goals": 0,
+        "actual_points": 10
     }
 ]
